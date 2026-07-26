@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>私信 - 樱花表白墙</title>
+  <link rel="icon" href="/img/yingzhenyu.ico"><script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>body{font-family:'Noto Sans SC',sans-serif;background:linear-gradient(0deg,#ffdee9 0%,#b5fffc 100%);min-height:100vh;margin:0}.glass{background:rgba(255,255,255,0.7);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.6)}.msg-sent{background:linear-gradient(to right,#ec4899,#f43f5e);color:white;border-radius:16px 16px 4px 16px;padding:10px 14px;max-width:70%;font-size:0.9rem;word-break:break-word}.msg-recv{background:white;color:#334155;border:1px solid #f1f5f9;border-radius:16px 16px 16px 4px;padding:10px 14px;max-width:70%;font-size:0.9rem;word-break:break-word}.conv-item{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;transition:all 0.2s;border-bottom:1px solid #f1f5f9}.conv-item:hover{background:rgba(255,255,255,0.5)}.unread-dot{width:10px;height:10px;background:#ec4899;border-radius:50%}.chat-time{font-size:0.65rem;color:#94a3b8;margin-top:2px}.date-sep{text-align:center;font-size:0.75rem;color:#94a3b8;padding:8px 0}.date-sep span{background:rgba(255,255,255,0.7);padding:2px 12px;border-radius:10px}</style>
+</head>
+<body>
+  <div class="flex h-screen">
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-full md:w-80 glass flex flex-col border-r border-white/30">
+      <div class="p-4 flex items-center gap-3 border-b border-white/30">
+        <a href="/" class="text-pink-500"><i class="fa-solid fa-arrow-left text-lg"></i></a>
+        <h2 class="font-bold text-lg text-pink-600">💬 私信</h2>
+      </div>
+      <div id="convList" class="flex-1 overflow-y-auto"></div>
+      <div id="convEmpty" class="flex-1 flex flex-col items-center justify-center text-gray-400" style="display:none">
+        <div class="text-4xl mb-3">💬</div><p>还没有会话</p><p class="text-sm">在表白详情页给TA发私信吧</p>
+      </div>
+      <div id="loginPrompt" class="flex-1 flex flex-col items-center justify-center text-gray-400" style="display:none">
+        <div class="text-4xl mb-3">🔒</div><p>请先登录</p><a href="/" class="mt-3 bg-gradient-to-r from-pink-500 to-rose-500 text-white px-6 py-2 rounded-full font-bold text-sm">去登录</a>
+      </div>
+    </div>
+    <!-- Chat Area -->
+    <div id="chatArea" class="flex-1 flex flex-col" style="display:none">
+      <div class="glass p-4 flex items-center gap-3 border-b border-white/30">
+        <button onclick="backToList()" class="md:hidden text-pink-500"><i class="fa-solid fa-arrow-left text-lg"></i></button>
+        <img id="chatAvatar" src="/img/loge.png" class="w-10 h-10 rounded-full border-2 border-pink-200">
+        <div><h3 id="chatName" class="font-bold text-gray-800"></h3><span id="chatStatus" class="text-xs text-gray-400"></span></div>
+      </div>
+      <div id="messages" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
+      <div class="glass p-3 flex gap-2 border-t border-white/30">
+        <input id="msgInput" class="flex-1 px-4 py-2.5 bg-white border border-pink-100 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-pink-300" placeholder="输入消息..." onkeydown="if(event.key==='Enter'){event.preventDefault();sendMsg();}">
+        <button onclick="sendMsg()" class="bg-gradient-to-r from-pink-500 to-rose-500 text-white w-10 h-10 rounded-full flex items-center justify-center"><i class="fa-solid fa-paper-plane"></i></button>
+      </div>
+    </div>
+    <div id="chatPlaceholder" class="flex-1 flex flex-col items-center justify-center text-gray-400">
+      <div class="text-5xl mb-3">💬</div><h3 class="font-bold text-lg">选择一个会话</h3><p class="text-sm">或在表白详情页发起私信</p>
+    </div>
+  </div>
+  <script>
+    const API='';let token=localStorage.getItem('token'),currentUser=null,currentConv=null,conversations=[];
+    document.addEventListener('DOMContentLoaded',async()=>{
+      if(!token){document.getElementById('sidebar').innerHTML='<div class="flex-1 flex flex-col items-center justify-center"><div class="text-4xl mb-3">🔒</div><p class="text-gray-500 mb-4">请先登录</p><a href="/" class="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-6 py-2 rounded-full font-bold text-sm">去登录</a></div>';return;}
+      try{const d=await fetchAPI('/api/auth/me');currentUser=d.user;loadConversations();const p=new URLSearchParams(location.search);const cid=p.get('id');if(cid)setTimeout(()=>openConv(cid),500);}catch(e){localStorage.removeItem('token');token=null;document.getElementById('sidebar').innerHTML='<div class="flex-1 flex flex-col items-center justify-center"><div class="text-4xl mb-3">⏰</div><p class="text-gray-500 mb-4">登录已过期</p><a href="/" class="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-6 py-2 rounded-full font-bold text-sm">去登录</a></div>';}
+    });
+    async function loadConversations(){try{const d=await fetchAPI('/api/chat/conversations');conversations=d.conversations;const list=document.getElementById('convList'),empty=document.getElementById('convEmpty');if(!conversations.length){list.style.display='none';empty.style.display='flex';return;}list.style.display='block';empty.style.display='none';list.innerHTML=conversations.map(c=>`<div class="conv-item" onclick="openConv('${c.id}')"><img src="${c.other_avatar||'/img/loge.png'}" class="w-11 h-11 rounded-full border-2 border-pink-200"><div class="flex-1 min-w-0"><h4 class="font-bold text-sm text-gray-800">${c.other_name||'用户'}</h4><p class="text-xs text-gray-400 truncate">${c.last_message||'暂无消息'}</p></div><div class="text-right flex-shrink-0"><span class="text-xs text-gray-400">${c.last_message_at?getTimeAgo(c.last_message_at):''}</span>${c.unread_count?'<div class="unread-dot ml-auto mt-1"></div>':''}</div></div>`).join('');}catch(e){}}
+    async function openConv(id){try{let conv=conversations.find(c=>c.id===id);if(!conv){const d=await fetchAPI('/api/chat/conversations','POST',{userId:id});conv=d.conversation;}currentConv=conv;document.getElementById('chatArea').style.display='flex';document.getElementById('chatPlaceholder').style.display='none';document.getElementById('chatName').textContent=conv.other_name;document.getElementById('chatAvatar').src=conv.other_avatar||'/img/loge.png';if(window.innerWidth<768)document.getElementById('sidebar').style.display='none';await loadMessages();}catch(e){}}
+    async function loadMessages(){try{const d=await fetchAPI(`/api/chat/conversations/${currentConv.id}/messages`);const c=document.getElementById('messages');c.innerHTML='';if(!d.messages.length){c.innerHTML='<div class="date-sep"><span>开始聊天吧</span></div>';}else{let lastDate='';d.messages.forEach(m=>{const dt=new Date(m.created_at+'Z').toLocaleDateString('zh-CN');if(dt!==lastDate){lastDate=dt;c.innerHTML+=`<div class="date-sep"><span>${dt}</span></div>`;}const isSent=m.sender_id===currentUser.id;c.innerHTML+=`<div class="flex ${isSent?'justify-end':'justify-start'}"><div class="${isSent?'msg-sent':'msg-recv'}">${escapeHtml(m.content)}</div></div>`;});}c.scrollTop=c.scrollHeight;}catch(e){}}
+    function sendMsg(){const input=document.getElementById('msgInput'),content=input.value.trim();if(!content||!currentConv)return;fetchAPI(`/api/chat/conversations/${currentConv.id}/messages`,'POST',{content}).then(d=>{const c=document.getElementById('messages');c.innerHTML+=`<div class="flex justify-end"><div class="msg-sent">${escapeHtml(content)}</div></div>`;c.scrollTop=c.scrollHeight;input.value='';}).catch(e=>{});}
+    function backToList(){document.getElementById('sidebar').style.display='flex';document.getElementById('chatArea').style.display='none';document.getElementById('chatPlaceholder').style.display='flex';}
+    async function fetchAPI(url,method='GET',body){const h={'Content-Type':'application/json'};if(token)h['Authorization']=`Bearer ${token}`;const o={method,headers:h};if(body)o.body=JSON.stringify(body);const r=await fetch(url,o);const d=await r.json();if(!r.ok)throw new Error(d.error||'失败');return d;}
+    function escapeHtml(s){if(!s)return '';const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+    function getTimeAgo(s){const d=new Date(s+(s.includes('Z')?'':'Z')),diff=Math.floor((Date.now()-d)/1000);if(diff<60)return'刚刚';if(diff<3600)return Math.floor(diff/60)+'分钟前';if(diff<86400)return Math.floor(diff/3600)+'小时前';if(diff<2592000)return Math.floor(diff/86400)+'天前';return Math.floor(diff/2592000)+'个月前';}
+  </script>
+</body>
+</html>
