@@ -68,7 +68,7 @@ async function initDatabase() {
     console.log('默认管理员: admin / admin123');
   }
 
-  const defaults = {siteName:'樱花表白墙',siteDescription:'勇敢说出你的故事',maintenanceMode:'false',maintenanceTitle:'网站维护中',maintenanceMessage:'我们正在进行系统升级，预计很快恢复。',maintenanceBgColor:'#ffdee9',maintenanceIcon:'🌸',maintenanceCountdown:'',maintenanceContact:'',maintenanceCustomCss:'',maintenanceCustomHtml:'',allowRegister:'true',allowAnonymous:'true',postReview:'false',maxImagesPerPost:'9',splashEnabled:'false',splashIcon:'🌸',splashTitle:'樱花表白墙',splashDesc:'勇敢说出你的故事',splashBg:'linear-gradient(135deg,#ffdee9,#b5fffc)'};
+  const defaults = {siteName:'樱花表白墙',siteDescription:'勇敢说出你的故事',maintenanceMode:'false',maintenanceTitle:'网站维护中',maintenanceMessage:'我们正在进行系统升级，预计很快恢复。',maintenanceBgColor:'#ffdee9',maintenanceIcon:'🌸',maintenanceCountdown:'',maintenanceContact:'',maintenanceCustomCss:'',maintenanceCustomHtml:'',allowRegister:'true',allowAnonymous:'true',postReview:'false',maxImagesPerPost:'9',splashEnabled:'false',splashIcon:'🌸',splashTitle:'樱花表白墙',splashDesc:'勇敢说出你的故事',splashBg:'linear-gradient(135deg,#ffdee9,#b5fffc)',siteLogo:'/img/loge.png'};
   for (const [k,v] of Object.entries(defaults)) {
     if (!db.prepare("SELECT key FROM settings WHERE key=?").get(k)) db.prepare("INSERT INTO settings (key,value) VALUES (?,?)").run(k,v);
   }

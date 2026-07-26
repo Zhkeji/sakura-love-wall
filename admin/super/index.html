@@ -2,111 +2,383 @@
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>超级管理员 - 樱花表白墙</title>
 <link rel="icon" href="/img/yingzhenyu.ico"><script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>body{font-family:'Noto Sans SC',sans-serif;background:linear-gradient(135deg,#ffdee9 0%,#c4b5fd 50%,#b5fffc 100%);min-height:100vh;margin:0}.glass{background:rgba(255,255,255,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.6)}.sidebar{width:240px;background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);border-right:1px solid rgba(255,255,255,0.6);position:fixed;top:0;left:0;bottom:0;z-index:100;display:flex;flex-direction:column}.nav-item{display:flex;align-items:center;gap:12px;padding:12px 20px;color:#64748b;font-size:14px;transition:all 0.2s;cursor:pointer}.nav-item:hover{background:rgba(236,72,153,0.05);color:#db2777}.nav-item.active{background:rgba(236,72,153,0.1);color:#db2777;font-weight:600}.stat-card{background:rgba(255,255,255,0.9);border-radius:16px;padding:20px;box-shadow:0 4px 20px rgba(0,0,0,0.03);border:1px solid rgba(255,255,255,0.9)}.data-table{width:100%;border-collapse:collapse;font-size:14px}.data-table th,.data-table td{padding:12px 16px;text-align:left;border-bottom:1px solid #f1f5f9}.data-table th{background:rgba(255,255,255,0.5);font-weight:600;color:#64748b;font-size:13px}.data-table tr:hover{background:rgba(255,255,255,0.5)}.status-published{background:#dcfce7;color:#16a34a;padding:2px 10px;border-radius:12px;font-size:12px}.status-pending{background:#fef3c7;color:#d97706;padding:2px 10px;border-radius:12px;font-size:12px}.status-hidden{background:#f1f5f9;color:#64748b;padding:2px 10px;border-radius:12px;font-size:12px}.btn-pink{background:linear-gradient(to right,#ec4899,#f43f5e);color:white;border:none;padding:8px 20px;border-radius:99px;font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 4px 6px rgba(236,72,153,0.25)}.btn-pink:active{transform:scale(0.95)}.btn-outline{background:white;border:1px solid #e2e8f0;color:#64748b;padding:6px 14px;border-radius:8px;font-size:13px;cursor:pointer}.btn-outline:hover{border-color:#ec4899;color:#ec4899}.btn-danger{background:white;border:1px solid #e2e8f0;color:#ef4444;padding:6px 14px;border-radius:8px;font-size:13px;cursor:pointer}.switch{position:relative;width:52px;height:28px;flex-shrink:0}.switch input{opacity:0;width:0;height:0}.slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#ddd;border-radius:28px;transition:0.3s}.slider:before{content:'';position:absolute;height:22px;width:22px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:0.3s}.switch input:checked+.slider{background:#ec4899}.switch input:checked+.slider:before{transform:translateX(24px)}.page{display:none}.page.active{display:block}@keyframes toastIn{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}@media(max-width:768px){.sidebar{transform:translateX(-100%);transition:transform 0.3s}.sidebar.open{transform:translateX(0)}}</style>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter','Noto Sans SC',system-ui,sans-serif;background:#f5f5f7;color:#1d1d1f}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:#d1d1d6;border-radius:3px}
+
+/* Sidebar */
+.sidebar{width:260px;background:#fff;border-right:1px solid #e5e5ea;position:fixed;top:0;left:0;bottom:0;display:flex;flex-direction:column;z-index:100}
+.sidebar-logo{padding:24px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #f2f2f7}
+.sidebar-logo img{width:36px;height:36px;border-radius:10px}
+.sidebar-logo span{font-size:18px;font-weight:700;color:#1d1d1f}
+.sidebar-nav{flex:1;padding:12px;overflow-y:auto}
+.nav-label{font-size:11px;font-weight:600;color:#8e8e93;text-transform:uppercase;letter-spacing:0.5px;padding:16px 12px 6px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;font-size:14px;color:#636366;cursor:pointer;transition:all 0.15s;margin-bottom:2px}
+.nav-item:hover{background:#f5f5f7;color:#1d1d1f}
+.nav-item.active{background:#007aff;color:#fff}
+.nav-item i{width:20px;text-align:center;font-size:15px}
+.sidebar-footer{padding:12px;border-top:1px solid #f2f2f7}
+
+/* Main */
+.main{margin-left:260px;min-height:100vh}
+.topbar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.8);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid #e5e5ea;padding:0 32px;height:56px;display:flex;align-items:center;justify-content:space-between}
+.topbar-title{font-size:20px;font-weight:700}
+.topbar-user{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500}
+.topbar-user img{width:32px;height:32px;border-radius:50%}
+.topbar-badge{font-size:11px;padding:2px 8px;border-radius:6px;background:#007aff;color:#fff}
+
+.content{padding:32px}
+.page{display:none}.page.active{display:block}
+
+/* Cards */
+.card{background:#fff;border-radius:16px;padding:24px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+.card-title{font-size:16px;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px}
+.stat-card{background:#fff;border-radius:16px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+.stat-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:12px}
+.stat-icon.blue{background:#e8f4fd;color:#007aff}
+.stat-icon.pink{background:#fce4ec;color:#ff3b5c}
+.stat-icon.green{background:#e8fde8;color:#34c759}
+.stat-icon.orange{background:#fff3e0;color:#ff9500}
+.stat-icon.purple{background:#f3e8fd;color:#af52de}
+.stat-value{font-size:28px;font-weight:700;color:#1d1d1f}
+.stat-label{font-size:13px;color:#8e8e93;margin-top:2px}
+
+/* Table */
+.data-table{width:100%;border-collapse:collapse}
+.data-table th,.data-table td{padding:12px 16px;text-align:left;border-bottom:1px solid #f2f2f7}
+.data-table th{font-size:12px;font-weight:600;color:#8e8e93;text-transform:uppercase;letter-spacing:0.3px}
+.data-table td{font-size:14px;color:#1d1d1f}
+.data-table tr:hover{background:#fafafa}
+.badge{display:inline-block;padding:3px 10px;border-radius:8px;font-size:12px;font-weight:500}
+.badge-green{background:#e8fde8;color:#34c759}
+.badge-orange{background:#fff3e0;color:#ff9500}
+.badge-red{background:#fce4ec;color:#ff3b5c}
+.badge-gray{background:#f2f2f7;color:#8e8e93}
+.badge-blue{background:#e8f4fd;color:#007aff}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border:none;border-radius:10px;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.15s}
+.btn-primary{background:#007aff;color:#fff}.btn-primary:hover{background:#0066d6}
+.btn-danger{background:#ff3b5c;color:#fff}.btn-danger:hover{background:#e0324f}
+.btn-ghost{background:#f2f2f7;color:#1d1d1f}.btn-ghost:hover{background:#e5e5ea}
+.btn-sm{padding:6px 12px;font-size:12px}
+
+/* Form */
+.form-group{margin-bottom:16px}
+.form-label{display:block;font-size:13px;font-weight:500;color:#636366;margin-bottom:6px}
+.form-input{width:100%;padding:10px 14px;border:1px solid #d1d1d6;border-radius:10px;font-size:14px;font-family:inherit;outline:none;transition:all 0.15s;background:#fff}
+.form-input:focus{border-color:#007aff;box-shadow:0 0 0 3px rgba(0,122,255,0.1)}
+textarea.form-input{min-height:80px;resize:vertical}
+.form-check{display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:14px}
+.form-check input{accent-color:#007aff}
+
+/* Toggle */
+.toggle{position:relative;width:44px;height:26px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.toggle .slider{position:absolute;cursor:pointer;inset:0;background:#e5e5ea;border-radius:26px;transition:0.2s}
+.toggle .slider:before{content:'';position:absolute;height:20px;width:20px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.15)}
+.toggle input:checked+.slider{background:#34c759}
+.toggle input:checked+.slider:before{transform:translateX(18px)}
+
+/* Actions */
+.actions{display:flex;gap:6px}
+
+/* Responsive */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);transition:transform 0.3s}.sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}.content{padding:16px}
+  .topbar{padding:0 16px}
+  .menu-btn{display:block!important}
+}
+
+/* Toast */
+.toast-area{position:fixed;top:72px;right:24px;z-index:999;pointer-events:none}
+.toast-item{background:#fff;padding:12px 20px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.1);font-size:14px;margin-bottom:8px;display:flex;align-items:center;gap:8px;animation:slideIn 0.3s}
+@keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+
+/* Modal */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.3);backdrop-filter:blur(4px);z-index:200;align-items:center;justify-content:center}
+.modal-bg.show{display:flex}
+.modal-box{background:#fff;border-radius:20px;padding:32px;max-width:480px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.15);animation:fadeUp 0.3s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* Color input */
+input[type="color"]{width:60px;height:36px;border:1px solid #d1d1d6;border-radius:8px;cursor:pointer;padding:2px}
+</style>
 </head><body>
-<div id="loginPage" class="min-h-screen flex items-center justify-center p-4">
-  <div class="glass rounded-3xl p-8 w-full max-w-sm shadow-2xl">
-    <div class="text-center mb-6"><div class="text-5xl mb-2">👑</div><h1 class="font-bold text-2xl text-pink-600">超级管理员</h1><p class="text-sm text-gray-400">樱花表白墙</p></div>
-    <div class="space-y-3"><input id="adminUser" type="text" class="w-full px-4 py-3 bg-white border border-pink-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm" placeholder="超管账号"><input id="adminPass" type="password" class="w-full px-4 py-3 bg-white border border-pink-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm" placeholder="密码"><button onclick="adminLogin()" class="w-full btn-pink py-3">登录</button><p class="text-center text-xs text-gray-400">普通管理员请前往 <a href="/admin/admin/" class="text-pink-500 underline">管理员后台</a></p></div>
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo"><img id="sidebarLogo" src="/img/loge.png"><span>超管后台</span></div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">概览</div>
+    <div class="nav-item active" data-page="dashboard"><i class="fa-solid fa-chart-pie"></i>仪表盘</div>
+    <div class="nav-label">内容管理</div>
+    <div class="nav-item" data-page="posts"><i class="fa-solid fa-heart"></i>帖子管理</div>
+    <div class="nav-item" data-page="comments"><i class="fa-solid fa-comments"></i>评论管理</div>
+    <div class="nav-item" data-page="reports"><i class="fa-solid fa-flag"></i>举报处理</div>
+    <div class="nav-item" data-page="announcements"><i class="fa-solid fa-bullhorn"></i>公告管理</div>
+    <div class="nav-label">用户</div>
+    <div class="nav-item" data-page="users"><i class="fa-solid fa-users"></i>用户管理</div>
+    <div class="nav-item" data-page="admins"><i class="fa-solid fa-user-shield"></i>管理员管理</div>
+    <div class="nav-item" data-page="chats"><i class="fa-solid fa-message"></i>私信管理</div>
+    <div class="nav-label">系统</div>
+    <div class="nav-item" data-page="settings"><i class="fa-solid fa-gear"></i>网站设置</div>
+    <div class="nav-item" data-page="splash"><i class="fa-solid fa-palette"></i>开屏页面</div>
+    <div class="nav-item" data-page="maintenance"><i class="fa-solid fa-wrench"></i>维护系统</div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="nav-item" onclick="window.open('/')"><i class="fa-solid fa-arrow-up-right-from-square"></i>访问前台</div>
+    <div class="nav-item" onclick="adminLogout()"><i class="fa-solid fa-right-from-bracket"></i>退出登录</div>
+  </div>
+</aside>
+
+<!-- Main -->
+<div class="main">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:12px">
+      <button onclick="document.getElementById('sidebar').classList.toggle('open')" class="menu-btn" style="display:none;background:none;border:none;font-size:20px;cursor:pointer"><i class="fa-solid fa-bars"></i></button>
+      <span class="topbar-title" id="pageTitle">仪表盘</span>
+    </div>
+    <div class="topbar-user">
+      <span id="adminName"></span>
+      <span class="topbar-badge">👑 超管</span>
+    </div>
+  </header>
+
+  <div class="content">
+    <!-- Dashboard -->
+    <div class="page active" id="page-dashboard">
+      <div class="stats-grid" id="statsGrid"></div>
+      <div class="card"><div class="card-title"><i class="fa-solid fa-clock-rotate-left"></i> 最新帖子</div><div id="recentPosts"></div></div>
+    </div>
+
+    <!-- Posts -->
+    <div class="page" id="page-posts">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+        <h2 style="font-size:20px;font-weight:700">帖子管理</h2>
+        <div style="display:flex;gap:8px">
+          <select id="postFilter" onchange="loadPosts()" class="form-input" style="width:auto"><option value="">全部状态</option><option value="published">已发布</option><option value="pending">待审核</option><option value="hidden">已隐藏</option></select>
+          <input id="postSearch" oninput="debounce(loadPosts,500)()" placeholder="搜索..." class="form-input" style="width:180px">
+        </div>
+      </div>
+      <div class="card"><div id="postsTable"></div></div>
+      <div id="postsPag" style="display:flex;justify-content:center;gap:6px;margin-top:16px"></div>
+    </div>
+
+    <!-- Users -->
+    <div class="page" id="page-users">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+        <h2 style="font-size:20px;font-weight:700">用户管理</h2>
+        <div style="display:flex;gap:8px">
+          <select id="userFilter" onchange="loadUsers()" class="form-input" style="width:auto"><option value="">全部角色</option><option value="user">用户</option><option value="admin">管理员</option></select>
+          <input id="userSearch" oninput="debounce(loadUsers,500)()" placeholder="搜索..." class="form-input" style="width:180px">
+        </div>
+      </div>
+      <div class="card"><div id="usersTable"></div></div>
+      <div id="usersPag" style="display:flex;justify-content:center;gap:6px;margin-top:16px"></div>
+    </div>
+
+    <!-- Comments -->
+    <div class="page" id="page-comments">
+      <h2 style="font-size:20px;font-weight:700;margin-bottom:20px">评论管理</h2>
+      <div class="card"><div id="commentsTable"></div></div>
+      <div id="commentsPag" style="display:flex;justify-content:center;gap:6px;margin-top:16px"></div>
+    </div>
+
+    <!-- Reports -->
+    <div class="page" id="page-reports">
+      <h2 style="font-size:20px;font-weight:700;margin-bottom:20px">举报处理</h2>
+      <div class="card"><div id="reportsTable"></div></div>
+    </div>
+
+    <!-- Announcements -->
+    <div class="page" id="page-announcements">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+        <h2 style="font-size:20px;font-weight:700">公告管理</h2>
+        <button class="btn btn-primary" onclick="showAddAnn()"><i class="fa-solid fa-plus"></i> 发布公告</button>
+      </div>
+      <div class="card"><div id="annTable"></div></div>
+    </div>
+
+    <!-- Admins -->
+    <div class="page" id="page-admins">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+        <h2 style="font-size:20px;font-weight:700">管理员管理</h2>
+        <button class="btn btn-primary" onclick="showAddAdmin()"><i class="fa-solid fa-plus"></i> 添加管理员</button>
+      </div>
+      <div class="card"><div id="adminsTable"></div></div>
+    </div>
+
+    <!-- Chats -->
+    <div class="page" id="page-chats">
+      <h2 style="font-size:20px;font-weight:700;margin-bottom:20px">私信管理</h2>
+      <div class="card"><div id="chatsTable"></div></div>
+      <div id="chatDetail" class="card" style="display:none;margin-top:20px">
+        <div class="card-title">会话详情</div>
+        <div id="chatMessages" style="max-height:400px;overflow-y:auto;margin-bottom:16px"></div>
+        <div style="display:flex;gap:8px">
+          <input id="interveneInput" class="form-input" placeholder="输入管理员消息..." style="flex:1">
+          <button class="btn btn-primary" onclick="sendIntervene()">发送介入</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings -->
+    <div class="page" id="page-settings">
+      <h2 style="font-size:20px;font-weight:700;margin-bottom:20px">网站设置</h2>
+      <div class="card" style="max-width:600px">
+        <div class="form-group"><label class="form-label">网站LOGO</label><div style="display:flex;align-items:center;gap:16px"><img id="logoPreview" src="/img/loge.png" style="width:48px;height:48px;border-radius:12px;object-fit:cover;border:1px solid #e5e5ea"><input id="setLogo" class="form-input" placeholder="LOGO路径 如 /img/logo.png" style="flex:1"></div></div>
+        <div class="form-group"><label class="form-label">网站名称</label><input id="setSiteName" class="form-input"></div>
+        <div class="form-group"><label class="form-label">网站描述</label><input id="setSiteDesc" class="form-input"></div>
+        <div class="form-check"><input type="checkbox" id="setAllowReg"><label for="setAllowReg">允许注册</label></div>
+        <div class="form-check"><input type="checkbox" id="setAllowAnonymous"><label for="setAllowAnonymous">允许匿名发布</label></div>
+        <div class="form-check"><input type="checkbox" id="setPostReview"><label for="setPostReview">帖子需要审核</label></div>
+        <div class="form-group"><label class="form-label">每帖最多图片</label><input id="setMaxImg" type="number" class="form-input" min="1" max="20" style="width:100px"></div>
+        <button class="btn btn-primary" onclick="saveSettings()">保存设置</button>
+      </div>
+    </div>
+
+    <!-- Splash -->
+    <div class="page" id="page-splash">
+      <h2 style="font-size:20px;font-weight:700;margin-bottom:20px">开屏页面</h2>
+      <div class="card" style="max-width:500px">
+        <div class="form-check"><input type="checkbox" id="splashEnabled"><label for="splashEnabled">启用开屏页面</label></div>
+        <div class="form-group"><label class="form-label">图标 (Emoji)</label><input id="splashIcon" class="form-input" placeholder="🌸"></div>
+        <div class="form-group"><label class="form-label">标题</label><input id="splashTitle" class="form-input"></div>
+        <div class="form-group"><label class="form-label">副标题</label><input id="splashDesc" class="form-input"></div>
+        <div class="form-group"><label class="form-label">背景 (CSS)</label><input id="splashBg" class="form-input" placeholder="linear-gradient(135deg,#ffdee9,#b5fffc)"></div>
+        <button class="btn btn-primary" onclick="saveSplash()">保存开屏设置</button>
+      </div>
+    </div>
+
+    <!-- Maintenance -->
+    <div class="page" id="page-maintenance">
+      <h2 style="font-size:20px;font-weight:700;margin-bottom:20px">维护系统</h2>
+      <div class="card" style="max-width:500px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+          <div><div style="font-weight:600">维护模式</div><div style="font-size:13px;color:#8e8e93">开启后前台显示维护页面</div></div>
+          <label class="toggle"><input type="checkbox" id="maintToggle" onchange="toggleMaint()"><span class="slider"></span></label>
+        </div>
+        <div class="form-group"><label class="form-label">图标</label><input id="maintIcon" class="form-input" placeholder="🌸"></div>
+        <div class="form-group"><label class="form-label">标题</label><input id="maintTitle" class="form-input"></div>
+        <div class="form-group"><label class="form-label">说明</label><textarea id="maintMsg" class="form-input"></textarea></div>
+        <div class="form-group"><label class="form-label">背景色</label><input id="maintBg" type="color" value="#ffdee9"></div>
+        <div class="form-group"><label class="form-label">预计恢复时间</label><input id="maintCountdown" type="datetime-local" class="form-input"></div>
+        <div class="form-group"><label class="form-label">联系方式</label><input id="maintContact" class="form-input"></div>
+        <div class="form-group"><label class="form-label">自定义CSS</label><textarea id="maintCss" class="form-input" style="font-family:monospace"></textarea></div>
+        <div class="form-group"><label class="form-label">自定义HTML</label><textarea id="maintHtml" class="form-input" style="font-family:monospace"></textarea></div>
+        <button class="btn btn-primary" onclick="saveMaint()">保存维护设置</button>
+      </div>
+    </div>
   </div>
 </div>
-<div id="adminApp" style="display:none">
-  <aside class="sidebar" id="sidebar">
-    <div class="p-5 border-b border-white/30"><span class="text-xl">👑</span><span class="font-bold text-pink-600 ml-2">超管后台</span></div>
-    <nav class="flex-1 py-2">
-      <div class="nav-item active" data-page="dashboard"><i class="fa-solid fa-chart-pie w-5"></i>仪表盘</div>
-      <div class="nav-item" data-page="posts"><i class="fa-solid fa-heart w-5"></i>帖子管理</div>
-      <div class="nav-item" data-page="users"><i class="fa-solid fa-users w-5"></i>用户管理</div>
-      <div class="nav-item" data-page="comments"><i class="fa-solid fa-comments w-5"></i>评论管理</div>
-      <div class="nav-item" data-page="reports"><i class="fa-solid fa-flag w-5"></i>举报处理</div>
-      <div class="border-t border-white/30 my-2"></div>
-      <div class="px-5 py-1 text-xs text-gray-400 uppercase tracking-wider">系统管理</div>
-      <div class="nav-item" data-page="settings"><i class="fa-solid fa-gear w-5"></i>网站设置</div>
-      <div class="nav-item" data-page="maintenance"><i class="fa-solid fa-wrench w-5"></i>维护系统</div>
-      <div class="nav-item" data-page="admins"><i class="fa-solid fa-user-shield w-5"></i>管理员管理</div>
-      <div class="nav-item" data-page="announcements"><i class="fa-solid fa-bullhorn w-5"></i>公告管理</div>
-      <div class="nav-item" data-page="splash"><i class="fa-solid fa-palette w-5"></i>开屏页面</div>
-      <div class="nav-item" data-page="chats"><i class="fa-solid fa-comments w-5"></i>私信管理</div>
-    </nav>
-    <div class="py-2 border-t border-white/30"><div class="nav-item" onclick="window.open('/')"><i class="fa-solid fa-external-link w-5"></i>访问前台</div><div class="nav-item" onclick="adminLogout()"><i class="fa-solid fa-right-from-bracket w-5"></i>退出登录</div></div>
-  </aside>
-  <main class="ml-60 min-h-screen">
-    <header class="glass sticky top-0 z-50 px-6 py-3 flex justify-between items-center border-b border-white/30">
-      <button onclick="document.getElementById('sidebar').classList.toggle('open')" class="md:hidden text-pink-500"><i class="fa-solid fa-bars text-xl"></i></button>
-      <div class="flex items-center gap-2"><span id="adminName" class="font-bold text-gray-700"></span><span class="bg-pink-100 text-pink-600 text-xs px-2 py-0.5 rounded-full">👑 超级管理员</span></div>
-    </header>
-    <div class="p-6">
-      <div class="page active" id="page-dashboard"><h2 class="text-2xl font-bold text-gray-800 mb-6">📊 仪表盘</h2><div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" id="statsGrid"></div><div class="glass rounded-2xl p-6"><h3 class="font-bold text-gray-700 mb-4">最新帖子</h3><div id="recentPosts"></div></div></div>
-      <div class="page" id="page-posts"><div class="flex flex-wrap justify-between items-center mb-6 gap-4"><h2 class="text-2xl font-bold text-gray-800">💕 帖子管理</h2><div class="flex gap-2"><select id="postFilter" onchange="loadPosts()" class="px-3 py-2 bg-white border border-pink-100 rounded-xl text-sm"><option value="">全部</option><option value="published">已发布</option><option value="pending">待审核</option><option value="hidden">已隐藏</option></select><input id="postSearch" oninput="debounce(loadPosts,500)()" placeholder="搜索..." class="px-3 py-2 bg-white border border-pink-100 rounded-xl text-sm w-40"></div></div><div class="glass rounded-2xl overflow-hidden"><div id="postsTable"></div></div><div class="flex justify-center gap-2 mt-4" id="postsPag"></div></div>
-      <div class="page" id="page-users"><div class="flex flex-wrap justify-between items-center mb-6 gap-4"><h2 class="text-2xl font-bold text-gray-800">👥 用户管理</h2><div class="flex gap-2"><select id="userFilter" onchange="loadUsers()" class="px-3 py-2 bg-white border border-pink-100 rounded-xl text-sm"><option value="">全部</option><option value="user">用户</option><option value="admin">管理员</option></select><input id="userSearch" oninput="debounce(loadUsers,500)()" placeholder="搜索..." class="px-3 py-2 bg-white border border-pink-100 rounded-xl text-sm w-40"></div></div><div class="glass rounded-2xl overflow-hidden"><div id="usersTable"></div></div><div class="flex justify-center gap-2 mt-4" id="usersPag"></div></div>
-      <div class="page" id="page-comments"><h2 class="text-2xl font-bold text-gray-800 mb-6">💬 评论管理</h2><div class="glass rounded-2xl overflow-hidden"><div id="commentsTable"></div></div><div class="flex justify-center gap-2 mt-4" id="commentsPag"></div></div>
-      <div class="page" id="page-reports"><h2 class="text-2xl font-bold text-gray-800 mb-6">🚩 举报处理</h2><div class="glass rounded-2xl overflow-hidden"><div id="reportsTable"></div></div></div>
-      <div class="page" id="page-settings"><h2 class="text-2xl font-bold text-gray-800 mb-6">⚙️ 网站设置</h2><div class="glass rounded-2xl p-6 max-w-lg"><div class="space-y-4"><div><label class="text-sm text-gray-500">网站名称</label><input id="setSiteName" class="w-full mt-1 px-3 py-2 border border-pink-100 rounded-xl text-sm"></div><div><label class="text-sm text-gray-500">网站描述</label><input id="setSiteDesc" class="w-full mt-1 px-3 py-2 border border-pink-100 rounded-xl text-sm"></div><label class="flex items-center gap-2"><input type="checkbox" id="setAllowReg" class="accent-pink-500"><span class="text-sm">允许注册</span></label><label class="flex items-center gap-2"><input type="checkbox" id="setAllowAnonymous" class="accent-pink-500"><span class="text-sm">允许匿名</span></label><label class="flex items-center gap-2"><input type="checkbox" id="setPostReview" class="accent-pink-500"><span class="text-sm">帖子需审核</span></label><div><label class="text-sm text-gray-500">每帖最多图片</label><input id="setMaxImg" type="number" class="w-full mt-1 px-3 py-2 border border-pink-100 rounded-xl text-sm" min="1" max="20"></div><button onclick="saveSettings()" class="btn-pink w-full">保存设置</button></div></div></div>
-      <div class="page" id="page-splash"><h2 class="text-2xl font-bold text-gray-800 mb-6">🎨 开屏页面</h2><div class="glass rounded-2xl p-6 max-w-lg"><div class="space-y-4"><label class="flex items-center gap-2"><input type="checkbox" id="splashEnabled" class="accent-pink-500"><span class="text-sm">启用开屏页面</span></label><div><label class="text-sm text-gray-500">图标 (Emoji)</label><input id="splashIcon" class="w-full mt-1 px-3 py-2 border border-pink-100 rounded-xl text-sm" placeholder="🌸"></div><div><label class="text-sm text-gray-500">标题</label><input id="splashTitle" class="w-full mt-1 px-3 py-2 border border-pink-100 rounded-xl text-sm" placeholder="樱花表白墙"></div><div><label class="text-sm text-gray-500">副标题</label><input id="splashDesc" class="w-full mt-1 px-3 py-2 border border-pink-100 rounded-xl text-sm" placeholder="勇敢说出你的故事"></div><div><label class="text-sm text-gray-500">背景 (CSS)</label><input id="splashBg" class="w-full mt-1 px-3 py-2 border border-pink-100 rounded-xl text-sm" placeholder="linear-gradient(135deg,#ffdee9,#b5fffc)"></div><button onclick="saveSplash()" class="btn-pink w-full">保存开屏设置</button></div></div></div>
-      <div class="page" id="page-chats"><h2 class="text-2xl font-bold text-gray-800 mb-6">💬 私信管理</h2><div class="glass rounded-2xl overflow-hidden"><div id="chatsTable"></div></div><div id="chatDetail" class="glass rounded-2xl p-6 mt-6" style="display:none"><h3 class="font-bold text-lg mb-4">会话详情</h3><div id="chatMessages" class="max-h-96 overflow-y-auto mb-4 space-y-2"></div><div class="flex gap-2"><input id="interveneInput" class="flex-1 px-4 py-2 border border-pink-100 rounded-xl text-sm" placeholder="输入管理员消息..."><button onclick="sendIntervene()" class="btn-pink">发送介入</button></div></div></div>
-      <div class="page" id="page-maintenance"><h2 class="text-2xl font-bold text-gray-800 mb-6">🔧 维护系统</h2><div class="glass rounded-2xl p-6 mb-6 flex items-center justify-between"><div><h3 class="font-bold text-gray-700">维护模式</h3><p class="text-sm text-gray-400">开启后前台显示维护页面</p></div><label class="switch"><input type="checkbox" id="maintToggle" onchange="toggleMaint()"><span class="slider"></span></label></div><div class="glass rounded-2xl p-6 max-w-lg"><div class="space-y-4"><div><label class="text-sm text-gray-500">图标</label><input id="maintIcon" class="w-full mt-1 px-3 py-2 border border-pink-100 rounded-xl text-sm" placeholder="🌸"></div><div><label class="text-sm text-gray-500">标题</label><input id="maintTitle" class="w-full mt-1 px-3 py-2 border border-pink-100 rounded-xl text-sm"></div><div><label class="text-sm text-gray-500">说明</label><textarea id="maintMsg" class="w-full mt-1 px-3 py-2 border border-pink-100 rounded-xl text-sm min-h-[80px] resize-none"></textarea></div><div><label class="text-sm text-gray-500">背景色</label><input id="maintBg" type="color" class="w-full mt-1 h-10 rounded-xl cursor-pointer" value="#ffdee9"></div><div><label class="text-sm text-gray-500">预计恢复时间</label><input id="maintCountdown" type="datetime-local" class="w-full mt-1 px-3 py-2 border border-pink-100 rounded-xl text-sm"></div><div><label class="text-sm text-gray-500">联系方式</label><input id="maintContact" class="w-full mt-1 px-3 py-2 border border-pink-100 rounded-xl text-sm"></div><div><label class="text-sm text-gray-500">自定义CSS</label><textarea id="maintCss" class="w-full mt-1 px-3 py-2 border border-pink-100 rounded-xl text-sm font-mono min-h-[60px] resize-none"></textarea></div><div><label class="text-sm text-gray-500">自定义HTML</label><textarea id="maintHtml" class="w-full mt-1 px-3 py-2 border border-pink-100 rounded-xl text-sm font-mono min-h-[60px] resize-none"></textarea></div><button onclick="saveMaint()" class="btn-pink w-full">保存维护设置</button></div></div></div>
-      <div class="page" id="page-admins"><div class="flex justify-between items-center mb-6"><h2 class="text-2xl font-bold text-gray-800">🛡️ 管理员管理</h2><button onclick="showAddAdmin()" class="btn-pink"><i class="fa-solid fa-plus mr-1"></i>添加管理员</button></div><div class="glass rounded-2xl overflow-hidden"><div id="adminsTable"></div></div></div>
-      <div class="page" id="page-announcements"><div class="flex justify-between items-center mb-6"><h2 class="text-2xl font-bold text-gray-800">📢 公告管理</h2><button onclick="showAddAnn()" class="btn-pink"><i class="fa-solid fa-plus mr-1"></i>发布公告</button></div><div class="glass rounded-2xl overflow-hidden"><div id="annTable"></div></div></div>
+
+<!-- Toast -->
+<div class="toast-area" id="toastArea"></div>
+
+<!-- Add Admin Modal -->
+<div class="modal-bg" id="addAdminModal" onclick="this.classList.remove('show')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <h3 style="font-size:18px;font-weight:700;margin-bottom:20px">添加管理员</h3>
+    <div class="form-group"><label class="form-label">用户名</label><input id="newAdminUser" class="form-input"></div>
+    <div class="form-group"><label class="form-label">密码</label><input id="newAdminPass" type="password" class="form-input"></div>
+    <div class="form-group"><label class="form-label">昵称</label><input id="newAdminNick" class="form-input"></div>
+    <button class="btn btn-primary" onclick="addAdmin()" style="width:100%">创建管理员</button>
+  </div>
+</div>
+
+<!-- Add Announcement Modal -->
+<div class="modal-bg" id="addAnnModal" onclick="this.classList.remove('show')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <h3 style="font-size:18px;font-weight:700;margin-bottom:20px">发布公告</h3>
+    <div class="form-group"><label class="form-label">标题</label><input id="annTitle" class="form-input"></div>
+    <div class="form-group"><label class="form-label">内容</label><textarea id="annContent" class="form-input"></textarea></div>
+    <div style="display:flex;gap:12px;margin-bottom:16px">
+      <select id="annType" class="form-input" style="width:auto"><option value="info">📢 普通</option><option value="urgent">🚨 紧急</option><option value="update">✨ 更新</option></select>
+      <label class="form-check"><input type="checkbox" id="annPin"><span>置顶</span></label>
+      <label class="form-check"><input type="checkbox" id="annPopup"><span>弹窗显示</span></label>
     </div>
-  </main>
+    <button class="btn btn-primary" onclick="addAnn()" style="width:100%">发布公告</button>
+  </div>
 </div>
-<div id="addAdminModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4" style="display:none" onclick="this.style.display='none'">
-  <div class="glass rounded-3xl p-6 w-full max-w-sm" onclick="event.stopPropagation()"><h3 class="font-bold text-xl text-gray-800 mb-4">添加管理员</h3><div class="space-y-3"><input id="newAdminUser" class="w-full px-4 py-3 bg-white border border-pink-100 rounded-xl text-sm" placeholder="用户名"><input id="newAdminPass" type="password" class="w-full px-4 py-3 bg-white border border-pink-100 rounded-xl text-sm" placeholder="密码"><input id="newAdminNick" class="w-full px-4 py-3 bg-white border border-pink-100 rounded-xl text-sm" placeholder="昵称"><button onclick="addAdmin()" class="btn-pink w-full">创建</button></div></div>
-</div>
-<div id="addAnnModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4" style="display:none" onclick="this.style.display='none'">
-  <div class="glass rounded-3xl p-6 w-full max-w-lg" onclick="event.stopPropagation()"><h3 class="font-bold text-xl text-gray-800 mb-4">发布公告</h3><div class="space-y-3"><input id="annTitle" class="w-full px-4 py-3 bg-white border border-pink-100 rounded-xl text-sm" placeholder="公告标题"><textarea id="annContent" class="w-full px-4 py-3 bg-white border border-pink-100 rounded-xl text-sm min-h-[100px] resize-none" placeholder="公告内容"></textarea><div class="flex gap-3"><select id="annType" class="px-3 py-2 bg-white border border-pink-100 rounded-xl text-sm"><option value="info">📢 普通</option><option value="urgent">🚨 紧急</option><option value="update">✨ 更新</option></select><label class="flex items-center gap-2"><input type="checkbox" id="annPin" class="accent-pink-500"><span class="text-sm">置顶</span></label></div><button onclick="addAnn()" class="btn-pink w-full">发布公告</button></div></div>
-</div> class="fixed top-20 left-1/2 -translate-x-1/2 z-[9999] pointer-events-none"></div>
+
 <script>
-const API='';let token=localStorage.getItem('admin_token') || null;
-document.querySelectorAll('.nav-item[data-page]').forEach(n=>{n.addEventListener('click',()=>{document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));n.classList.add('active');document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('page-'+n.dataset.page).classList.add('active');loadPage(n.dataset.page);document.getElementById('sidebar').classList.remove('open');});});
-async function checkAuth(){try{const d=await fetchAPI('/api/auth/me');if(d.user.role!=='super_admin'){localStorage.removeItem('admin_token');token=null;return;} adminUser=d.user;showDashboard();}catch(e){localStorage.removeItem('admin_token');token=null;}}
-function adminLogin(){const u=document.getElementById('adminUser').value,p=document.getElementById('adminPass').value;if(!u||!p)return;fetchAPI('/api/auth/login','POST',{username:u,password:p}).then(d=>{if(d.user.role!=='super_admin')return showT('仅限超级管理员','error');token=d.token; localStorage.setItem('admin_token',token); adminUser=d.user; showDashboard(); showT('登录成功 👑');}).catch(e=>showT(e.message,'error'));}
-function showDashboard(){document.getElementById('loginPage').style.display='none';document.getElementById('adminApp').style.display='block';document.getElementById('adminName').textContent=adminUser.nickname;loadPage('dashboard');}
+const API='';let token=***
+
+// Nav
+document.querySelectorAll('.nav-item[data-page]').forEach(n=>{n.addEventListener('click',()=>{document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));n.classList.add('active');document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('page-'+n.dataset.page).classList.add('active');document.getElementById('pageTitle').textContent=n.textContent.trim();loadPage(n.dataset.page);document.getElementById('sidebar').classList.remove('open');});});
+
+// Auth
+async function checkAuth(){try{const d=await fetchAPI('/api/auth/me');if(d.user.role!=='super_admin'){localStorage.removeItem('admin_token');token=*** adminUser=d.user;showDashboard();}catch(e){localStorage.removeItem('admin_token');token=***
+function showDashboard(){document.getElementById('adminName').textContent=adminUser.nickname;loadPage('dashboard');}
 function adminLogout(){token=null;adminUser=null;localStorage.removeItem('admin_token');location.reload();}
-function loadPage(p){const fn={dashboard:loadDashboard,posts:loadPosts,users:loadUsers,comments:loadComments,reports:loadReports,settings:loadSettings,maintenance:loadMaint,admins:loadAdmins,announcements:loadAnnouncements,splash:loadSplash,chats:loadChats};if(fn[p])fn[p]();}
-async function loadDashboard(){try{const d=await fetchAPI('/api/admin/stats');const s=d.stats;document.getElementById('statsGrid').innerHTML=`<div class="stat-card"><div class="text-2xl mb-1">👥</div><div class="text-2xl font-bold">${s.totalUsers}</div><div class="text-xs text-gray-400">总用户</div></div><div class="stat-card"><div class="text-2xl mb-1">💕</div><div class="text-2xl font-bold">${s.totalPosts}</div><div class="text-xs text-gray-400">总帖子</div></div><div class="stat-card"><div class="text-2xl mb-1">💬</div><div class="text-2xl font-bold">${s.totalComments}</div><div class="text-xs text-gray-400">总评论</div></div><div class="stat-card"><div class="text-2xl mb-1">⚠️</div><div class="text-2xl font-bold">${s.pendingReview}</div><div class="text-xs text-gray-400">待审核</div></div>`;document.getElementById('recentPosts').innerHTML=d.recentPosts.length?`<table class="data-table"><thead><tr><th>标题</th><th>作者</th><th>状态</th><th>时间</th></tr></thead><tbody>${d.recentPosts.map(p=>`<tr><td>${esc(p.title)}</td><td>${esc(p.nickname)}</td><td><span class="status-${p.status}">${stText(p.status)}</span></td><td>${fmtDate(p.created_at)}</td></tr>`).join('')}</tbody></table>`:'<p class="text-gray-400 text-center py-8">暂无数据</p>';}catch(e){showT('加载失败','error');}}
-let pp=1;async function loadPosts(page=1){pp=page;const st=document.getElementById('postFilter').value,sk=document.getElementById('postSearch').value;let url=`/api/admin/posts?page=${page}&limit=15`;if(st)url+=`&status=${st}`;if(sk)url+=`&search=${encodeURIComponent(sk)}`;try{const d=await fetchAPI(url);document.getElementById('postsTable').innerHTML=`<table class="data-table"><thead><tr><th>标题</th><th>作者</th><th>状态</th><th>👍</th><th>💬</th><th>时间</th><th>操作</th></tr></thead><tbody>${d.posts.map(p=>`<tr><td class="max-w-[200px] truncate">${esc(p.title)}</td><td>${esc(p.author_name||'')}</td><td><span class="status-${p.status}">${stText(p.status)}</span></td><td>${p.likes}</td><td>${p.comments_count}</td><td>${fmtDate(p.created_at)}</td><td class="flex gap-1">${p.status==='pending'?`<button class="btn-outline" onclick="updatePost('${p.id}','published')">通过</button>`:''}${p.status==='published'?`<button class="btn-outline" onclick="updatePost('${p.id}','hidden')">隐藏</button>`:''}${p.status==='hidden'?`<button class="btn-outline" onclick="updatePost('${p.id}','published')">显示</button>`:''}<button class="btn-danger" onclick="deletePost('${p.id}')">删除</button></td></tr>`).join('')}</tbody></table>`;renderPag('postsPag',d.pagination,loadPosts);}catch(e){}}
+function loadPage(p){const fn={dashboard:loadDashboard,posts:loadPosts,users:loadUsers,comments:loadComments,reports:loadReports,announcements:loadAnnouncements,admins:loadAdmins,chats:loadChats,settings:loadSettings,splash:loadSplash,maintenance:loadMaint};if(fn[p])fn[p]();}
+
+// Dashboard
+async function loadDashboard(){try{const d=await fetchAPI('/api/admin/stats');const s=d.stats;document.getElementById('statsGrid').innerHTML=`<div class="stat-card"><div class="stat-icon blue"><i class="fa-solid fa-users"></i></div><div class="stat-value">${s.totalUsers}</div><div class="stat-label">总用户</div></div><div class="stat-card"><div class="stat-icon pink"><i class="fa-solid fa-heart"></i></div><div class="stat-value">${s.totalPosts}</div><div class="stat-label">总帖子</div></div><div class="stat-card"><div class="stat-icon green"><i class="fa-solid fa-comments"></i></div><div class="stat-value">${s.totalComments}</div><div class="stat-label">总评论</div></div><div class="stat-card"><div class="stat-icon orange"><i class="fa-solid fa-clock"></i></div><div class="stat-value">${s.todayPosts}</div><div class="stat-label">今日新帖</div></div>`;document.getElementById('recentPosts').innerHTML=d.recentPosts.length?`<table class="data-table"><thead><tr><th>标题</th><th>作者</th><th>状态</th><th>时间</th></tr></thead><tbody>${d.recentPosts.map(p=>`<tr><td>${esc(p.title)}</td><td>${esc(p.nickname)}</td><td><span class="badge ${p.status==='published'?'badge-green':p.status==='pending'?'badge-orange':'badge-gray'}">${stText(p.status)}</span></td><td>${fmtDate(p.created_at)}</td></tr>`).join('')}</tbody></table>`:'<p style="color:#8e8e93;text-align:center;padding:24px">暂无数据</p>';}catch(e){showT('加载失败','error');}}
+
+// Posts
+let pp=1;async function loadPosts(page=1){pp=page;const st=document.getElementById('postFilter').value,sk=document.getElementById('postSearch').value;let url=`/api/admin/posts?page=${page}&limit=15`;if(st)url+=`&status=${st}`;if(sk)url+=`&search=${encodeURIComponent(sk)}`;try{const d=await fetchAPI(url);document.getElementById('postsTable').innerHTML=`<table class="data-table"><thead><tr><th>标题</th><th>作者</th><th>状态</th><th>👍</th><th>💬</th><th>时间</th><th>操作</th></tr></thead><tbody>${d.posts.map(p=>`<tr><td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(p.title)}</td><td>${esc(p.author_name||'')}</td><td><span class="badge ${p.status==='published'?'badge-green':p.status==='pending'?'badge-orange':'badge-gray'}">${stText(p.status)}</span></td><td>${p.likes}</td><td>${p.comments_count}</td><td>${fmtDate(p.created_at)}</td><td class="actions">${p.status==='pending'?`<button class="btn btn-sm btn-primary" onclick="updatePost('${p.id}','published')">通过</button>`:''}${p.status==='published'?`<button class="btn btn-sm btn-ghost" onclick="updatePost('${p.id}','hidden')">隐藏</button>`:''}${p.status==='hidden'?`<button class="btn btn-sm btn-primary" onclick="updatePost('${p.id}','published')">显示</button>`:''}<button class="btn btn-sm btn-danger" onclick="deletePost('${p.id}')">删除</button></td></tr>`).join('')}</tbody></table>`;renderPag('postsPag',d.pagination,loadPosts);}catch(e){}}
 async function updatePost(id,st){try{await fetchAPI(`/api/admin/posts/${id}/status`,'PUT',{status:st});showT('已更新');loadPosts(pp);}catch(e){showT(e.message,'error');}}
 async function deletePost(id){if(!confirm('确定删除？'))return;try{await fetchAPI(`/api/admin/posts/${id}`,'DELETE');showT('已删除');loadPosts(pp);}catch(e){showT(e.message,'error');}}
-let up=1;async function loadUsers(page=1){up=page;const rl=document.getElementById('userFilter').value,sk=document.getElementById('userSearch').value;let url=`/api/admin/users?page=${page}&limit=15`;if(rl)url+=`&role=${rl}`;if(sk)url+=`&search=${encodeURIComponent(sk)}`;try{const d=await fetchAPI(url);document.getElementById('usersTable').innerHTML=`<table class="data-table"><thead><tr><th>用户名</th><th>昵称</th><th>角色</th><th>状态</th><th>注册时间</th><th>操作</th></tr></thead><tbody>${d.users.map(u=>`<tr><td>${esc(u.username)}</td><td>${esc(u.nickname)}</td><td>${roleText(u.role)}</td><td><span class="status-${u.status}">${u.status==='active'?'正常':'封禁'}</span></td><td>${fmtDate(u.created_at)}</td><td class="flex gap-1">${u.id!==adminUser.id?`<button class="btn-outline" onclick="toggleUser('${u.id}','${u.status==='active'?'banned':'active'}')">${u.status==='active'?'封禁':'解封'}</button>${u.role!=='super_admin'?`<button class="btn-outline" onclick="changeRole('${u.id}','${u.role==='admin'?'user':'admin'}')">${u.role==='admin'?'取消管理':'设为管理'}</button><button class="btn-danger" onclick="deleteUser('${u.id}')">删除</button>`:''}`:'<span class="text-gray-300">-</span>'}</td></tr>`).join('')}</tbody></table>`;renderPag('usersPag',d.pagination,loadUsers);}catch(e){}}
+
+// Users
+let up=1;async function loadUsers(page=1){up=page;const rl=document.getElementById('userFilter').value,sk=document.getElementById('userSearch').value;let url=`/api/admin/users?page=${page}&limit=15`;if(rl)url+=`&role=${rl}`;if(sk)url+=`&search=${encodeURIComponent(sk)}`;try{const d=await fetchAPI(url);document.getElementById('usersTable').innerHTML=`<table class="data-table"><thead><tr><th>用户名</th><th>昵称</th><th>角色</th><th>状态</th><th>注册时间</th><th>操作</th></tr></thead><tbody>${d.users.map(u=>`<tr><td>${esc(u.username)}</td><td>${esc(u.nickname)}</td><td>${roleText(u.role)}</td><td><span class="badge ${u.status==='active'?'badge-green':'badge-red'}">${u.status==='active'?'正常':'封禁'}</span></td><td>${fmtDate(u.created_at)}</td><td class="actions">${u.id!==adminUser.id?`<button class="btn btn-sm btn-ghost" onclick="toggleUser('${u.id}','${u.status==='active'?'banned':'active'}')">${u.status==='active'?'封禁':'解封'}</button>${u.role!=='super_admin'?`<button class="btn btn-sm btn-ghost" onclick="changeRole('${u.id}','${u.role==='admin'?'user':'admin'}')">${u.role==='admin'?'取消管理':'设为管理'}</button><button class="btn btn-sm btn-danger" onclick="deleteUser('${u.id}')">删除</button>`:''}`:'<span style="color:#d1d1d6">-</span>'}</td></tr>`).join('')}</tbody></table>`;renderPag('usersPag',d.pagination,loadUsers);}catch(e){}}
 async function toggleUser(id,st){try{await fetchAPI(`/api/admin/users/${id}/status`,'PUT',{status:st});showT(st==='banned'?'已封禁':'已解封');loadUsers(up);}catch(e){showT(e.message,'error');}}
 async function changeRole(id,role){try{await fetchAPI(`/api/admin/users/${id}/role`,'PUT',{role});showT('已更新');loadUsers(up);}catch(e){showT(e.message,'error');}}
 async function deleteUser(id){if(!confirm('确定删除？'))return;try{await fetchAPI(`/api/admin/users/${id}`,'DELETE');showT('已删除');loadUsers(up);}catch(e){showT(e.message,'error');}}
-let cp=1;async function loadComments(page=1){cp=page;try{const d=await fetchAPI(`/api/admin/comments?page=${page}&limit=20`);document.getElementById('commentsTable').innerHTML=d.comments.length?`<table class="data-table"><thead><tr><th>内容</th><th>作者</th><th>帖子</th><th>时间</th><th>操作</th></tr></thead><tbody>${d.comments.map(c=>`<tr><td class="max-w-[300px] truncate">${esc(c.content)}</td><td>${esc(c.author_name)}</td><td>${esc(c.post_title||'')}</td><td>${fmtDate(c.created_at)}</td><td><button class="btn-danger" onclick="deleteComment('${c.id}')">删除</button></td></tr>`).join('')}</tbody></table>`:'<p class="text-gray-400 text-center py-8">暂无</p>';renderPag('commentsPag',d.pagination,loadComments);}catch(e){}}
+
+// Comments
+let cp=1;async function loadComments(page=1){cp=page;try{const d=await fetchAPI(`/api/admin/comments?page=${page}&limit=20`);document.getElementById('commentsTable').innerHTML=d.comments.length?`<table class="data-table"><thead><tr><th>内容</th><th>作者</th><th>帖子</th><th>时间</th><th>操作</th></tr></thead><tbody>${d.comments.map(c=>`<tr><td style="max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(c.content)}</td><td>${esc(c.author_name)}</td><td>${esc(c.post_title||'')}</td><td>${fmtDate(c.created_at)}</td><td><button class="btn btn-sm btn-danger" onclick="deleteComment('${c.id}')">删除</button></td></tr>`).join('')}</tbody></table>`:'<p style="color:#8e8e93;text-align:center;padding:24px">暂无评论</p>';renderPag('commentsPag',d.pagination,loadComments);}catch(e){}}
 async function deleteComment(id){if(!confirm('确定？'))return;try{await fetchAPI(`/api/admin/comments/${id}`,'DELETE');showT('已删除');loadComments(cp);}catch(e){showT(e.message,'error');}}
-async function loadReports(){try{const d=await fetchAPI('/api/admin/reports');document.getElementById('reportsTable').innerHTML=d.reports.length?`<table class="data-table"><thead><tr><th>举报人</th><th>类型</th><th>原因</th><th>时间</th><th>操作</th></tr></thead><tbody>${d.reports.map(r=>`<tr><td>${esc(r.reporter_name)}</td><td>${r.target_type}</td><td>${esc(r.reason)}</td><td>${fmtDate(r.created_at)}</td><td class="flex gap-1"><button class="btn-outline" onclick="resolve('${r.id}','resolved')">处理</button><button class="btn-outline" onclick="resolve('${r.id}','dismissed')">驳回</button></td></tr>`).join('')}</tbody></table>`:'<p class="text-gray-400 text-center py-8">暂无</p>';}catch(e){}}
+
+// Reports
+async function loadReports(){try{const d=await fetchAPI('/api/admin/reports');document.getElementById('reportsTable').innerHTML=d.reports.length?`<table class="data-table"><thead><tr><th>举报人</th><th>类型</th><th>原因</th><th>时间</th><th>操作</th></tr></thead><tbody>${d.reports.map(r=>`<tr><td>${esc(r.reporter_name)}</td><td>${r.target_type}</td><td>${esc(r.reason)}</td><td>${fmtDate(r.created_at)}</td><td class="actions"><button class="btn btn-sm btn-primary" onclick="resolve('${r.id}','resolved')">处理</button><button class="btn btn-sm btn-ghost" onclick="resolve('${r.id}','dismissed')">驳回</button></td></tr>`).join('')}</tbody></table>`:'<p style="color:#8e8e93;text-align:center;padding:24px">暂无举报</p>';}catch(e){}}
 async function resolve(id,st){try{await fetchAPI(`/api/admin/reports/${id}`,'PUT',{status:st});showT('已处理');loadReports();}catch(e){showT(e.message,'error');}}
-async function loadSettings(){try{const d=await fetchAPI('/api/admin/settings');const s=d.settings;document.getElementById('setSiteName').value=s.siteName||'';document.getElementById('setSiteDesc').value=s.siteDescription||'';document.getElementById('setAllowReg').checked=s.allowRegister==='true';document.getElementById('setAllowAnonymous').checked=s.allowAnonymous==='true';document.getElementById('setPostReview').checked=s.postReview==='true';document.getElementById('setMaxImg').value=s.maxImagesPerPost||9;}catch(e){}}
-async function saveSettings(){try{await fetchAPI('/api/admin/settings','PUT',{siteName:document.getElementById('setSiteName').value,siteDescription:document.getElementById('setSiteDesc').value,allowRegister:String(document.getElementById('setAllowReg').checked),allowAnonymous:String(document.getElementById('setAllowAnonymous').checked),postReview:String(document.getElementById('setPostReview').checked),maxImagesPerPost:document.getElementById('setMaxImg').value});showT('已保存');}catch(e){showT(e.message,'error');}}
+
+// Announcements
+function showAddAnn(){document.getElementById('addAnnModal').classList.add('show');}
+async function addAnn(){const title=document.getElementById('annTitle').value.trim(),content=document.getElementById('annContent').value.trim(),type=document.getElementById('annType').value,is_pinned=document.getElementById('annPin').checked,show_popup=document.getElementById('annPopup').checked;if(!title||!content)return showT('请填写标题和内容','error');try{await fetchAPI('/api/announcements','POST',{title,content,type,is_pinned,show_popup});document.getElementById('addAnnModal').classList.remove('show');showT('公告已发布');document.getElementById('annTitle').value='';document.getElementById('annContent').value='';loadAnnouncements();}catch(e){showT(e.message,'error');}}
+async function loadAnnouncements(){try{const d=await fetchAPI('/api/announcements/admin/all');document.getElementById('annTable').innerHTML=d.announcements.length?`<table class="data-table"><thead><tr><th>标题</th><th>类型</th><th>置顶</th><th>弹窗</th><th>时间</th><th>操作</th></tr></thead><tbody>${d.announcements.map(a=>`<tr><td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(a.title)}</td><td>${a.type==='urgent'?'🚨 紧急':a.type==='update'?'✨ 更新':'📢 普通'}</td><td>${a.is_pinned?'📌 是':'否'}</td><td>${a.show_popup?'🔔 是':'否'}</td><td>${fmtDate(a.created_at)}</td><td class="actions"><button class="btn btn-sm btn-ghost" onclick="togglePinAnn('${a.id}',${a.is_pinned?0:1})">${a.is_pinned?'取消置顶':'置顶'}</button><button class="btn btn-sm btn-danger" onclick="deleteAnn('${a.id}')">删除</button></td></tr>`).join('')}</tbody></table>`:'<p style="color:#8e8e93;text-align:center;padding:24px">暂无公告</p>';}catch(e){showT('加载失败','error');}}
+async function togglePinAnn(id,pin){try{await fetchAPI(`/api/announcements/${id}`,'PUT',{is_pinned:pin});showT('已更新');loadAnnouncements();}catch(e){showT(e.message,'error');}}
+async function deleteAnn(id){if(!confirm('确定删除？'))return;try{await fetchAPI(`/api/announcements/${id}`,'DELETE');showT('已删除');loadAnnouncements();}catch(e){showT(e.message,'error');}}
+
+// Admins
+async function loadAdmins(){try{const d=await fetchAPI('/api/admin/users?role=admin&limit=100');document.getElementById('adminsTable').innerHTML=d.users.length?`<table class="data-table"><thead><tr><th>用户名</th><th>昵称</th><th>注册时间</th><th>操作</th></tr></thead><tbody>${d.users.map(u=>`<tr><td>${esc(u.username)}</td><td>${esc(u.nickname)}</td><td>${fmtDate(u.created_at)}</td><td><button class="btn btn-sm btn-ghost" onclick="changeRole('${u.id}','user')">取消管理</button> <button class="btn btn-sm btn-danger" onclick="deleteUser('${u.id}')">删除</button></td></tr>`).join('')}</tbody></table>`:'<p style="color:#8e8e93;text-align:center;padding:24px">暂无管理员</p>';}catch(e){}}
+function showAddAdmin(){document.getElementById('addAdminModal').classList.add('show');}
+async function addAdmin(){const u=document.getElementById('newAdminUser').value,p=document.getElementById('newAdminPass').value,n=document.getElementById('newAdminNick').value;if(!u||!p||!n)return showT('请填写完整','error');try{await fetchAPI('/api/admin/users/admin','POST',{username:u,password:p,nickname:n});document.getElementById('addAdminModal').classList.remove('show');showT('已添加');loadAdmins();}catch(e){showT(e.message,'error');}}
+
+// Chats
+let currentChatConvId=null;
+async function loadChats(){try{const d=await fetchAPI('/api/chat/admin/conversations');document.getElementById('chatsTable').innerHTML=d.conversations.length?`<table class="data-table"><thead><tr><th>用户1</th><th>用户2</th><th>最后消息</th><th>消息数</th><th>时间</th><th>操作</th></tr></thead><tbody>${d.conversations.map(c=>`<tr><td>${esc(c.user1_name||c.user1_username)}</td><td>${esc(c.user2_name||c.user2_username)}</td><td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(c.last_message||'')}</td><td>${c.message_count}</td><td>${fmtDate(c.last_message_at)}</td><td><button class="btn btn-sm btn-primary" onclick="viewChat('${c.id}')">查看</button></td></tr>`).join('')}</tbody></table>`:'<p style="color:#8e8e93;text-align:center;padding:24px">暂无私信</p>';}catch(e){showT('加载失败','error');}}
+async function viewChat(convId){currentChatConvId=convId;try{const d=await fetchAPI(`/api/chat/admin/conversations/${convId}/messages`);document.getElementById('chatDetail').style.display='block';document.getElementById('chatMessages').innerHTML=d.messages.length?d.messages.map(m=>`<div style="margin-bottom:8px;${m.type==='system'?'text-align:center':''}"><div style="display:inline-block;padding:8px 14px;border-radius:12px;${m.type==='system'?'background:#fff3e0;color:#ff9500;font-size:12px':'background:#f2f2f7;color:#1d1d1f;font-size:14px'}">${m.type==='system'?'🔒 系统消息':`<b>${esc(m.sender_name)}</b>: ${esc(m.content)}`}</div></div>`).join(''):'<p style="color:#8e8e93;text-align:center">暂无消息</p>';}catch(e){showT('加载失败','error');}}
+async function sendIntervene(){const input=document.getElementById('interveneInput'),content=input.value.trim();if(!content||!currentChatConvId)return;try{await fetchAPI(`/api/chat/admin/conversations/${currentChatConvId}/intervene`,'POST',{content});input.value='';showT('已介入');viewChat(currentChatConvId);}catch(e){showT(e.message,'error');}}
+
+// Settings
+async function loadSettings(){try{const d=await fetchAPI('/api/admin/settings');const s=d.settings;document.getElementById('setLogo').value=s.siteLogo||'/img/loge.png';document.getElementById('logoPreview').src=s.siteLogo||'/img/loge.png';document.getElementById('setSiteName').value=s.siteName||'';document.getElementById('setSiteDesc').value=s.siteDescription||'';document.getElementById('setAllowReg').checked=s.allowRegister==='true';document.getElementById('setAllowAnonymous').checked=s.allowAnonymous==='true';document.getElementById('setPostReview').checked=s.postReview==='true';document.getElementById('setMaxImg').value=s.maxImagesPerPost||9;}catch(e){}}
+async function saveSettings(){try{await fetchAPI('/api/admin/settings','PUT',{siteLogo:document.getElementById('setLogo').value,siteName:document.getElementById('setSiteName').value,siteDescription:document.getElementById('setSiteDesc').value,allowRegister:String(document.getElementById('setAllowReg').checked),allowAnonymous:String(document.getElementById('setAllowAnonymous').checked),postReview:String(document.getElementById('setPostReview').checked),maxImagesPerPost:document.getElementById('setMaxImg').value});showT('设置已保存');document.getElementById('sidebarLogo').src=document.getElementById('setLogo').value;}catch(e){showT(e.message,'error');}}
+
+// Splash
+async function loadSplash(){try{const d=await fetchAPI('/api/admin/settings');const s=d.settings;document.getElementById('splashEnabled').checked=s.splashEnabled==='true';document.getElementById('splashIcon').value=s.splashIcon||'🌸';document.getElementById('splashTitle').value=s.splashTitle||'';document.getElementById('splashDesc').value=s.splashDesc||'';document.getElementById('splashBg').value=s.splashBg||'';}catch(e){}}
+async function saveSplash(){try{await fetchAPI('/api/admin/settings','PUT',{splashEnabled:String(document.getElementById('splashEnabled').checked),splashIcon:document.getElementById('splashIcon').value,splashTitle:document.getElementById('splashTitle').value,splashDesc:document.getElementById('splashDesc').value,splashBg:document.getElementById('splashBg').value});showT('开屏设置已保存');}catch(e){showT(e.message,'error');}}
+
+// Maintenance
 async function loadMaint(){try{const d=await fetchAPI('/api/maintenance');const m=d.maintenance;document.getElementById('maintToggle').checked=m.mode;document.getElementById('maintIcon').value=m.icon||'';document.getElementById('maintTitle').value=m.title||'';document.getElementById('maintMsg').value=m.message||'';document.getElementById('maintBg').value=m.bgColor||'#ffdee9';if(m.countdown)document.getElementById('maintCountdown').value=m.countdown;document.getElementById('maintContact').value=m.contact||'';document.getElementById('maintCss').value=m.customCss||'';document.getElementById('maintHtml').value=m.customHtml||'';}catch(e){}}
 async function toggleMaint(){try{const d=await fetchAPI('/api/maintenance/toggle','POST');showT(d.message);}catch(e){showT(e.message,'error');document.getElementById('maintToggle').checked=!document.getElementById('maintToggle').checked;}}
 async function saveMaint(){try{await fetchAPI('/api/maintenance','PUT',{icon:document.getElementById('maintIcon').value,title:document.getElementById('maintTitle').value,message:document.getElementById('maintMsg').value,bgColor:document.getElementById('maintBg').value,countdown:document.getElementById('maintCountdown').value||'',contact:document.getElementById('maintContact').value,customCss:document.getElementById('maintCss').value,customHtml:document.getElementById('maintHtml').value});showT('已保存');}catch(e){showT(e.message,'error');}}
-async function loadAdmins(){try{const d1=await fetchAPI('/api/admin/users?role=admin&limit=100');document.getElementById('adminsTable').innerHTML=d1.users.length?`<table class="data-table"><thead><tr><th>用户名</th><th>昵称</th><th>注册时间</th><th>操作</th></tr></thead><tbody>${d1.users.map(u=>`<tr><td>${esc(u.username)}</td><td>${esc(u.nickname)}</td><td>${fmtDate(u.created_at)}</td><td><button class="btn-outline" onclick="changeRole('${u.id}','user')">取消管理</button> <button class="btn-danger" onclick="deleteUser('${u.id}')">删除</button></td></tr>`).join('')}</tbody></table>`:'<p class="text-gray-400 text-center py-8">暂无管理员</p>';}catch(e){}}
-function showAddAdmin(){document.getElementById('addAdminModal').style.display='flex';}
-async function addAdmin(){const u=document.getElementById('newAdminUser').value,p=document.getElementById('newAdminPass').value,n=document.getElementById('newAdminNick').value;if(!u||!p||!n)return showT('请填写完整','error');try{await fetchAPI('/api/admin/users/admin','POST',{username:u,password:p,nickname:n});document.getElementById('addAdminModal').style.display='none';showT('已添加');loadAdmins();}catch(e){showT(e.message,'error');}}
+
+// Util
 async function fetchAPI(url,method='GET',body){const h={'Content-Type':'application/json'};if(token)h['Authorization']=`Bearer ${token}`;const o={method,headers:h};if(body)o.body=JSON.stringify(body);const r=await fetch(API+url,o);const d=await r.json();if(!r.ok)throw new Error(d.error||'失败');return d;}
-function renderPag(id,pag,fn){const c=document.getElementById(id);if(!pag||pag.totalPages<=1){c.innerHTML='';return;}let h='';if(pag.page>1)h+=`<button class="btn-outline" onclick="${fn.name}(${pag.page-1})">上页</button>`;for(let i=Math.max(1,pag.page-2);i<=Math.min(pag.totalPages,pag.page+2);i++)h+=`<button class="${i===pag.page?'btn-pink':'btn-outline'}" onclick="${fn.name}(${i})">${i}</button>`;if(pag.page<pag.totalPages)h+=`<button class="btn-outline" onclick="${fn.name}(${pag.page+1})">下页</button>`;c.innerHTML=h;}
+function renderPag(id,pag,fn){const c=document.getElementById(id);if(!pag||pag.totalPages<=1){c.innerHTML='';return;}let h='';if(pag.page>1)h+=`<button class="btn btn-sm btn-ghost" onclick="${fn.name}(${pag.page-1})">上页</button>`;for(let i=Math.max(1,pag.page-2);i<=Math.min(pag.totalPages,pag.page+2);i++)h+=`<button class="btn btn-sm ${i===pag.page?'btn-primary':'btn-ghost'}" onclick="${fn.name}(${i})">${i}</button>`;if(pag.page<pag.totalPages)h+=`<button class="btn btn-sm btn-ghost" onclick="${fn.name}(${pag.page+1})">下页</button>`;c.innerHTML=h;}
 function esc(s){if(!s)return '';const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
 function fmtDate(s){if(!s)return '-';return new Date(s+(s.includes('Z')?'':'Z')).toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});}
 function stText(s){return{published:'已发布',pending:'待审核',hidden:'已隐藏'}[s]||s;}
 function roleText(r){return{user:'用户',admin:'管理员',super_admin:'超管'}[r]||r;}
-function showT(m,t='success'){const c=document.getElementById('toast'),d=document.createElement('div');d.style.cssText=`background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);padding:10px 24px;border-radius:50px;box-shadow:0 5px 20px rgba(0,0,0,0.08);font-size:0.9rem;margin-bottom:10px;display:flex;align-items:center;animation:toastIn 0.3s;border:1px solid #ffe4e6;color:#333`;const icon=t==='success'?'<i class="fa-solid fa-circle-check" style="color:#10b981;margin-right:8px"></i>':'<i class="fa-solid fa-circle-exclamation" style="color:#f43f5e;margin-right:8px"></i>';d.innerHTML=icon+'<span>'+m+'</span>';c.appendChild(d);setTimeout(()=>{d.style.opacity='0';setTimeout(()=>d.remove(),300);},3000);}
-// === 公告管理 ===
-function showAddAnn(){document.getElementById('addAnnModal').style.display='flex';}
-async function addAnn(){const title=document.getElementById('annTitle').value.trim(),content=document.getElementById('annContent').value.trim(),type=document.getElementById('annType').value,is_pinned=document.getElementById('annPin').checked;if(!title||!content)return showT('请填写标题和内容','error');try{await fetchAPI('/api/announcements','POST',{title,content,type,is_pinned});document.getElementById('addAnnModal').style.display='none';showT('公告已发布');document.getElementById('annTitle').value='';document.getElementById('annContent').value='';loadAnnouncements();}catch(e){showT(e.message,'error');}}
-async function loadAnnouncements(){try{const d=await fetchAPI('/api/announcements/admin/all');document.getElementById('annTable').innerHTML=d.announcements.length?`<table class="data-table"><thead><tr><th>标题</th><th>类型</th><th>置顶</th><th>时间</th><th>操作</th></tr></thead><tbody>${d.announcements.map(a=>`<tr><td class="max-w-[200px] truncate">${esc(a.title)}</td><td>${a.type==='urgent'?'🚨 紧急':a.type==='update'?'✨ 更新':'📢 普通'}</td><td>${a.is_pinned?'📌 是':'否'}</td><td>${fmtDate(a.created_at)}</td><td class="flex gap-1"><button class="btn-outline" onclick="togglePinAnn('${a.id}',${a.is_pinned?0:1})">${a.is_pinned?'取消置顶':'置顶'}</button><button class="btn-danger" onclick="deleteAnn('${a.id}')">删除</button></td></tr>`).join('')}</tbody></table>`:'<p class="text-gray-400 text-center py-8">暂无公告</p>';}catch(e){showT('加载失败','error');}}
-async function togglePinAnn(id,pin){try{await fetchAPI(`/api/announcements/${id}`,'PUT',{is_pinned:pin});showT('已更新');loadAnnouncements();}catch(e){showT(e.message,'error');}}
-async function deleteAnn(id){if(!confirm('确定删除此公告？'))return;try{await fetchAPI(`/api/announcements/${id}`,'DELETE');showT('已删除');loadAnnouncements();}catch(e){showT(e.message,'error');}}
-
-// === 开屏页面 ===
-async function loadSplash(){try{const d=await fetchAPI('/api/admin/settings');const s=d.settings;document.getElementById('splashEnabled').checked=s.splashEnabled==='true';document.getElementById('splashIcon').value=s.splashIcon||'🌸';document.getElementById('splashTitle').value=s.splashTitle||'';document.getElementById('splashDesc').value=s.splashDesc||'';document.getElementById('splashBg').value=s.splashBg||'';}catch(e){}}
-async function saveSplash(){try{await fetchAPI('/api/admin/settings','PUT',{splashEnabled:String(document.getElementById('splashEnabled').checked),splashIcon:document.getElementById('splashIcon').value,splashTitle:document.getElementById('splashTitle').value,splashDesc:document.getElementById('splashDesc').value,splashBg:document.getElementById('splashBg').value});showT('开屏设置已保存');}catch(e){showT(e.message,'error');}}
-
-// === 私信管理 ===
-let currentChatConvId=null;
-async function loadChats(){try{const d=await fetchAPI('/api/chat/admin/conversations');document.getElementById('chatsTable').innerHTML=d.conversations.length?`<table class="data-table"><thead><tr><th>用户1</th><th>用户2</th><th>最后消息</th><th>消息数</th><th>时间</th><th>操作</th></tr></thead><tbody>${d.conversations.map(c=>`<tr><td>${esc(c.user1_name||c.user1_username)}</td><td>${esc(c.user2_name||c.user2_username)}</td><td class="max-w-[200px] truncate">${esc(c.last_message||'')}</td><td>${c.message_count}</td><td>${fmtDate(c.last_message_at)}</td><td><button class="btn-outline" onclick="viewChat('${c.id}')">查看</button></td></tr>`).join('')}</tbody></table>`:'<p class="text-gray-400 text-center py-8">暂无私信</p>';}catch(e){showT('加载失败','error');}}
-async function viewChat(convId){currentChatConvId=convId;try{const d=await fetchAPI(`/api/chat/admin/conversations/${convId}/messages`);document.getElementById('chatDetail').style.display='block';document.getElementById('chatMessages').innerHTML=d.messages.length?d.messages.map(m=>`<div class="flex ${m.type==='system'?'justify-center':'justify-start'}"><div class="${m.type==='system'?'bg-yellow-50 text-yellow-700 text-xs px-3 py-1 rounded-full':'bg-gray-50 text-gray-700 text-sm px-3 py-2 rounded-xl max-w-xs'}">${m.type==='system'?'🔒 系统消息: ':`<b>${esc(m.sender_name)}</b>: `}${esc(m.content)}</div></div>`).join(''):'<p class="text-gray-400 text-center">暂无消息</p>';}catch(e){showT('加载失败','error');}}
-async function sendIntervene(){const input=document.getElementById('interveneInput'),content=input.value.trim();if(!content||!currentChatConvId)return;try{await fetchAPI(`/api/chat/admin/conversations/${currentChatConvId}/intervene`,'POST',{content});input.value='';showT('已介入');viewChat(currentChatConvId);}catch(e){showT(e.message,'error');}}
+function showT(m,t='success'){const c=document.getElementById('toastArea'),d=document.createElement('div');d.className='toast-item';d.innerHTML=`<i class="fa-solid fa-circle-${t==='success'?'check':'exclamation'}" style="color:${t==='success'?'#34c759':'#ff3b5c'}"></i> ${m}`;c.appendChild(d);setTimeout(()=>{d.style.opacity='0';setTimeout(()=>d.remove(),300);},3000);}
 function debounce(fn,d){let t;return function(...a){clearTimeout(t);t=setTimeout(()=>fn.apply(this,a),d);};}
 if(token)checkAuth();
 </script></body></html>

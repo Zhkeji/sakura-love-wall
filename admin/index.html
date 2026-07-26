@@ -2,20 +2,25 @@
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>管理后台 - 樱花表白墙</title>
 <link rel="icon" href="/img/yingzhenyu.ico"><script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>body{font-family:'Noto Sans SC',sans-serif;background:linear-gradient(135deg,#ffdee9 0%,#c4b5fd 50%,#b5fffc 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;margin:0}.glass{background:rgba(255,255,255,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.6)}</style>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter','Noto Sans SC',system-ui,sans-serif;background:#f5f5f7;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}.card{background:#fff;border-radius:20px;padding:48px;max-width:420px;width:100%;box-shadow:0 4px 24px rgba(0,0,0,0.06);text-align:center}.card h1{font-size:28px;font-weight:700;color:#1d1d1f;margin-bottom:8px}.card p{font-size:15px;color:#8e8e93;margin-bottom:32px}.btn-group{display:flex;flex-direction:column;gap:12px}.btn-item{display:flex;align-items:center;gap:14px;padding:18px 20px;border-radius:14px;text-decoration:none;transition:all 0.2s;border:1px solid #e5e5ea}.btn-item:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.08)}.btn-item .icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px}.btn-item .info h3{font-size:15px;font-weight:600;color:#1d1d1f}.btn-item .info span{font-size:13px;color:#8e8e93}.btn-super .icon{background:linear-gradient(135deg,#ff6b8a,#e74c6f);color:#fff}.btn-admin .icon{background:linear-gradient(135deg,#5e5ce6,#5856d6);color:#fff}.back{display:inline-flex;align-items:center;gap:6px;margin-top:24px;font-size:13px;color:#8e8e93;text-decoration:none}.back:hover{color:#1d1d1f}</style>
 </head><body>
-<div class="glass rounded-3xl p-10 w-full max-w-md shadow-2xl mx-4 text-center">
-  <div class="text-6xl mb-4">🌸</div>
-  <h1 class="font-bold text-2xl text-gray-800 mb-2">樱花表白墙</h1>
-  <p class="text-gray-400 text-sm mb-8">请选择你的管理入口</p>
-  <div class="space-y-4">
-    <a href="/admin/super/" class="block w-full bg-gradient-to-r from-pink-500 to-rose-500 text-white py-4 rounded-2xl font-bold shadow-lg hover:shadow-xl transition transform hover:scale-[1.02]">
-      <div class="text-2xl mb-1">👑</div>超级管理员入口
+<div class="card">
+  <div style="font-size:48px;margin-bottom:16px">🌸</div>
+  <h1>樱花表白墙</h1>
+  <p>请选择你的管理入口</p>
+  <div class="btn-group">
+    <a href="/admin/super/" class="btn-item btn-super">
+      <div class="icon"><i class="fa-solid fa-crown"></i></div>
+      <div class="info"><h3>超级管理员</h3><span>完整管理权限</span></div>
+      <i class="fa-solid fa-chevron-right" style="color:#d1d1d6;margin-left:auto"></i>
     </a>
-    <a href="/admin/admin/" class="block w-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white py-4 rounded-2xl font-bold shadow-lg hover:shadow-xl transition transform hover:scale-[1.02]">
-      <div class="text-2xl mb-1">🔧</div>管理员入口
+    <a href="/admin/admin/" class="btn-item btn-admin">
+      <div class="icon"><i class="fa-solid fa-wrench"></i></div>
+      <div class="info"><h3>管理员</h3><span>内容管理权限</span></div>
+      <i class="fa-solid fa-chevron-right" style="color:#d1d1d6;margin-left:auto"></i>
     </a>
   </div>
-  <p class="text-xs text-gray-300 mt-6"><a href="/" class="underline">← 返回前台</a></p>
+  <a href="/" class="back"><i class="fa-solid fa-arrow-left"></i> 返回前台</a>
 </div>
 </body></html>

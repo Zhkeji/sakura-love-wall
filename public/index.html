@@ -439,6 +439,7 @@
 
     // === Sidebar ===
     async function loadSidebar(){try{const d=await fetchAPI('/api/posts?limit=1');document.getElementById('statPosts').textContent=d.pagination.total;}catch(e){}
+      try{const d=await fetchAPI('/api/admin/settings');const s=d.settings;if(s.siteLogo){document.querySelectorAll('.logo img').forEach(img=>img.src=s.siteLogo);document.querySelectorAll('.hero-banner img')[0]&&(document.querySelectorAll('.hero-banner img')[0].src=s.siteLogo);}document.getElementById('siteName').textContent=s.siteName||'樱花表白墙';}catch(e){}
       try{const d=await fetchAPI('/api/announcements?limit=5');if(d.announcements?.length){const icons={info:'📢',urgent:'🚨',update:'✨'};document.getElementById('sidebarAnn').innerHTML=d.announcements.map(a=>`<div class="announcement-item"><span class="ann-badge ${a.type}">${icons[a.type]||'📢'}</span><span class="ann-title">${esc(a.title)}</span><div style="font-size:12px;color:#aaa;margin-top:2px">${esc(a.content).substring(0,60)}</div></div>`).join('');const marqueeText=d.announcements.map(a=>`${icons[a.type]||'📢'} ${a.title}: ${a.content}`).join('　　　');document.getElementById('annMarquee').textContent=marqueeText;}}catch(e){}}
 
     // === Tabs ===
