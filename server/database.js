@@ -59,6 +59,7 @@ async function initDatabase() {
     CREATE TABLE IF NOT EXISTS conversations (id TEXT PRIMARY KEY,user1_id TEXT NOT NULL,user2_id TEXT NOT NULL,last_message TEXT,last_message_at TEXT,created_at TEXT DEFAULT (datetime('now')));
     CREATE TABLE IF NOT EXISTS reports (id TEXT PRIMARY KEY,reporter_id TEXT NOT NULL,target_id TEXT NOT NULL,target_type TEXT NOT NULL,reason TEXT NOT NULL,status TEXT DEFAULT 'pending',created_at TEXT DEFAULT (datetime('now')),resolved_at TEXT);
     CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY,value TEXT NOT NULL,updated_at TEXT DEFAULT (datetime('now')));
+    CREATE TABLE IF NOT EXISTS announcements (id TEXT PRIMARY KEY,title TEXT NOT NULL,content TEXT NOT NULL,type TEXT DEFAULT 'info',is_pinned INTEGER DEFAULT 0,status TEXT DEFAULT 'published',created_at TEXT DEFAULT (datetime('now')),updated_at TEXT DEFAULT (datetime('now')));
   `);
 
   const adminExists = db.prepare("SELECT id FROM users WHERE role = 'super_admin'").get();

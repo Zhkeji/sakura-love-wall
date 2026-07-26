@@ -1,11 +1,13 @@
 const express=require('express'),http=require('http'),{Server}=require('socket.io'),path=require('path'),cookieParser=require('cookie-parser'),rateLimit=require('express-rate-limit'),{initDatabase}=require('./database'),{setupSocket}=require('./socket'),{loadSettings}=require('./settings');
 const app=express(),server=http.createServer(app),io=new Server(server,{cors:{origin:'*'}});
 app.use(express.json({limit:'10mb'}));app.use(express.urlencoded({extended:true,limit:'10mb'}));app.use(cookieParser());
-app.use('/api/',rateLimit({windowMs:15*60*1000,max:200,message:{error:'请求频繁'}}));
+app.set('trust proxy', 1);
+app.use('/api/',rateLimit({windowMs:15*60*1000,max:200,standardHeaders:false,legacyHeaders:false,validate:{xForwardedForHeader:false},message:{error:'请求频繁'}}));
 app.use(express.static(path.join(__dirname,'../public')));app.use('/admin',express.static(path.join(__dirname,'../admin')));app.use('/uploads',express.static(path.join(__dirname,'../public/uploads')));
 app.set('io',io);
 app.use((req,res,next)=>{try{const s=loadSettings();if(s.maintenanceMode==='true'&&!req.path.startsWith('/admin')&&!req.path.startsWith('/api/admin')&&!req.path.startsWith('/api/auth')&&!req.path.startsWith('/api/maintenance')&&!req.path.startsWith('/socket.io')){if(req.path.startsWith('/api/'))return res.status(503).json({error:'维护中'});return res.sendFile(path.join(__dirname,'../views/maintenance.html'));}}catch(e){}next();});
 app.use('/api/auth',require('./routes/auth'));app.use('/api/posts',require('./routes/posts'));app.use('/api/admin',require('./routes/admin'));app.use('/api/chat',require('./routes/chat'));app.use('/api/upload',require('./routes/upload'));app.use('/api/maintenance',require('./routes/maintenance'));
+app.use('/api/announcements',require('./routes/announcements'));
 app.get('/admin',(req,res)=>res.sendFile(path.join(__dirname,'../admin/index.html')));
 app.get('/admin/super',(req,res)=>res.sendFile(path.join(__dirname,'../admin/super/index.html')));
 app.get('/admin/super/',(req,res)=>res.sendFile(path.join(__dirname,'../admin/super/index.html')));

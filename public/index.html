@@ -96,7 +96,7 @@
     <!-- 公告 -->
     <div class="glass rounded-xl px-4 py-3 flex items-center space-x-3 text-sm text-pink-600 border border-white/50">
       <i class="fa-solid fa-bell animate-bounce text-pink-400"></i>
-      <marquee class="flex-1 font-medium">欢迎来到樱花表白墙 🌸 勇敢说出你的故事吧！</marquee>
+      <marquee id="announcementMarquee" class="flex-1 font-medium">欢迎来到樱花表白墙 🌸 勇敢说出你的故事吧！</marquee>
     </div>
 
     <!-- 分类Tabs -->
@@ -254,7 +254,7 @@
       try{let url=`/api/posts?page=${currentPage}&sort=${currentSort}`;if(searchKeyword)url+=`&search=${encodeURIComponent(searchKeyword)}`;const d=await fetchAPI(url);const c=document.getElementById('postsContainer');d.posts.forEach(p=>c.appendChild(createPostCard(p)));hasMore=currentPage<d.pagination.totalPages;currentPage++;document.getElementById('emptyState').style.display=d.posts.length===0&&currentPage===2?'block':'none';renderPagination(d.pagination);}catch(e){showToast('加载失败','error');}finally{isLoading=false;document.getElementById('loadingSpinner').style.display='none';}}
 
     function createPostCard(p){const d=document.createElement('div');d.className='lo_ve';const tags=p.tags&&p.tags.length?`<div class="flex flex-wrap gap-1 mb-2">${p.tags.map(t=>`<span class="bg-pink-50 text-pink-500 text-xs px-2 py-0.5 rounded-full">#${t}</span>`).join('')}</div>`:'';const catIcons={confession:'💕',daily:'☕',expand:'🤝'};const catNames={confession:'表白',daily:'日常',expand:'扩列'};const catHtml=p.category?`<span class="text-xs bg-pink-50 text-pink-400 px-2 py-0.5 rounded-full mr-2">${catIcons[p.category]||'💕'} ${catNames[p.category]||'表白'}</span>`:'';
-    d.innerHTML=`<div class="love_zero_ta">${p.title}</div>${tags}<p class="love_zero_xx">${p.content.length>200?p.content.substring(0,200)+'<span class="zknr" onclick="event.stopPropagation();openDetail(\''+p.id+'\')">[全文]</span>':p.content}</p><div class="love_actions flex justify-between items-center pt-3 border-t border-gray-100 mt-3"><button class="like_btn ${p.isLiked?'liked':''}" onclick="event.stopPropagation();likePost('${p.id}',this)"><i class="fa-${p.isLiked?'solid':'regular'} fa-heart"></i> ${p.likes}</button><button class="comment_btn" onclick="event.stopPropagation();openDetail('${p.id}')"><i class="fa-regular fa-comment-dots"></i> ${p.comments_count}</button></div><div class="love_zero_bz mt-2">${catHtml}${p.author_name} · ${getTimeAgo(p.created_at)}</div>`;
+    d.innerHTML=`<div class="love_zero_ta">${p.title}</div>${tags}<p class="love_zero_xx">${p.content.length>200?p.content.substring(0,200)+'<span class="zknr" onclick="event.stopPropagation();openDetail(\''+p.id+'\')">[全文]</span>':p.content}</p><div class="love_actions flex justify-between items-center pt-3 border-t border-gray-100 mt-3"><button class="like_btn ${p.isLiked?'liked':''}" onclick="event.stopPropagation();likePost('${p.id}',this)"><i class="fa-${p.isLiked?'solid':'regular'} fa-heart"></i> ${p.likes}</button><button class="comment_btn" onclick="event.stopPropagation();openDetail('${p.id}')"><i class="fa-regular fa-comment-dots"></i> ${p.comments_count}</button>${p.author_id?`<button class="comment_btn" onclick="event.stopPropagation();startChat('${p.author_id}')"><i class="fa-regular fa-envelope"></i></button>`:''}</div><div class="love_zero_bz mt-2">${catHtml}${p.author_name} · ${getTimeAgo(p.created_at)}</div>`;
     d.style.cursor='pointer';d.onclick=()=>openDetail(p.id);return d;}
 
     async function openDetail(id){try{const d=await fetchAPI(`/api/posts/${id}`);const p=d.post,comments=d.comments;const tagsHtml=p.tags?.length?`<div class="flex flex-wrap gap-1 mb-3">${p.tags.map(t=>`<span class="bg-pink-50 text-pink-500 text-xs px-2 py-0.5 rounded-full">#${t}</span>`).join('')}</div>`:'';const chatBtn=p.author_id&&currentUser&&p.author_id!==currentUser.id?`<button onclick="startChat('${p.author_id}')" class="text-pink-500 bg-pink-50 px-3 py-1 rounded-full text-xs font-bold"><i class="fa-solid fa-envelope mr-1"></i>私信</button>`:'';const delBtn=currentUser&&(p.author_id===currentUser.id||['admin','super_admin'].includes(currentUser.role))?`<button onclick="deletePost('${p.id}')" class="text-red-400 text-xs ml-2"><i class="fa-solid fa-trash"></i></button>`:'';
@@ -294,7 +294,18 @@
     function siteTime(){const d=Math.floor((Date.now()-Date.UTC(2025,0,1))/86400000);document.getElementById('sitetime').textContent=`🌸 已甜蜜运行 ${d} 天`;}
 
     // === Init ===
-    window.onload=async()=>{await initAuth();loadPosts();siteTime();setInterval(checkUnread,30000);};
+    window.onload=async()=>{await initAuth();loadPosts();loadAnnouncements();siteTime();setInterval(checkUnread,30000);};
+
+    // === 公告 ===
+    async function loadAnnouncements(){
+      try{
+        const d=await fetchAPI('/api/announcements?limit=5');
+        if(d.announcements&&d.announcements.length>0){
+          const texts=d.announcements.map(a=>`${a.type==='urgent'?'🚨':'📢'} ${a.title}: ${a.content}`);
+          document.getElementById('announcementMarquee').textContent=texts.join('　　　');
+        }
+      }catch(e){}
+    }
   </script>
 </body>
 </html>
