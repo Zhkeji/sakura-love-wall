@@ -307,14 +307,14 @@ input[type="color"]{width:60px;height:36px;border:1px solid #d1d1d6;border-radiu
 </div>
 
 <script>
-const API='';let token=***
+const API='';let token=localStorage.getItem('admin_token') || null;let adminUser=null;
 
 // Nav
 document.querySelectorAll('.nav-item[data-page]').forEach(n=>{n.addEventListener('click',()=>{document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));n.classList.add('active');document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('page-'+n.dataset.page).classList.add('active');document.getElementById('pageTitle').textContent=n.textContent.trim();loadPage(n.dataset.page);document.getElementById('sidebar').classList.remove('open');});});
 
 // Auth
-async function checkAuth(){try{const d=await fetchAPI('/api/auth/me');if(d.user.role!=='super_admin'){localStorage.removeItem('admin_token');token=*** adminUser=d.user;showDashboard();}catch(e){localStorage.removeItem('admin_token');token=***
-function showDashboard(){document.getElementById('adminName').textContent=adminUser.nickname;loadPage('dashboard');}
+async function checkAuth(){try{const d=await fetchAPI('/api/auth/me');if(d.user.role!=='super_admin'){localStorage.removeItem('admin_token');token=null;showT('仅限超级管理员','error');return;}adminUser=d.user;showDashboard();}catch(e){localStorage.removeItem('admin_token');token=null;showT('登录已过期','error');}}
+function showDashboard(){document.getElementById('loginPage').style.display='none';document.getElementById('adminApp').style.display='block';document.getElementById('adminName').textContent=adminUser.nickname;loadPage('dashboard');}
 function adminLogout(){token=null;adminUser=null;localStorage.removeItem('admin_token');location.reload();}
 function loadPage(p){const fn={dashboard:loadDashboard,posts:loadPosts,users:loadUsers,comments:loadComments,reports:loadReports,announcements:loadAnnouncements,admins:loadAdmins,chats:loadChats,settings:loadSettings,splash:loadSplash,maintenance:loadMaint};if(fn[p])fn[p]();}
 

@@ -655,7 +655,7 @@
 
   <script>
     const API='';
-    let token=localS…
+    let token=localStorage.getItem('token');let currentUser=null;
 
     // ========== 浮动光点 ==========
     function createParticles(){
@@ -864,7 +864,7 @@
           currentUser=d.user;
           enterSite();
         }catch(e){
-          localStorage.removeItem('token');token=***
+          localStorage.removeItem("token");token=null;
           document.getElementById('authPage').style.display='flex';
         }
       }else{
