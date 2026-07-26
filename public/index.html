@@ -225,12 +225,23 @@
         <marquee id="annMarquee" style="flex:1;font-weight:500">欢迎来到樱花表白墙 🌸</marquee>
       </div>
 
+      <!-- Search Bar -->
+      <div style="background:#fff;border-radius:12px;padding:12px 16px;margin-bottom:16px;border:1px solid #f5f0ee">
+        <div style="display:flex;gap:8px">
+          <div style="flex:1;position:relative">
+            <i class="fa-solid fa-magnifying-glass" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#ccc;font-size:14px"></i>
+            <input id="inlineSearchInput" class="form-input" placeholder="搜索表白内容或表白对象..." style="padding-left:36px;border-radius:8px;font-size:14px" onkeydown="if(event.key==='Enter')doInlineSearch()">
+          </div>
+          <button class="btn-primary" onclick="doInlineSearch()" style="padding:10px 20px;border-radius:8px;border:none;cursor:pointer;font-size:14px;white-space:nowrap"><i class="fa-solid fa-search"></i> 搜索</button>
+        </div>
+      </div>
+
       <!-- Tabs -->
       <div class="feed-tabs">
-        <button class="feed-tab active" data-sort="latest"><i class="fa-solid fa-clock"></i> 最新</button>
-        <button class="feed-tab" data-sort="hot"><i class="fa-solid fa-fire"></i> 最热</button>
-        <button class="feed-tab" data-sort="comments"><i class="fa-solid fa-comments"></i> 评论</button>
-        <button class="feed-tab" onclick="showModal('searchModal')"><i class="fa-solid fa-magnifying-glass"></i> 搜索</button>
+        <button class="feed-tab active" data-sort="latest"><i class="fa-solid fa-clock"></i> 最新发布</button>
+        <button class="feed-tab" data-sort="hot"><i class="fa-solid fa-fire"></i> 最受欢迎</button>
+        <button class="feed-tab" data-sort="views"><i class="fa-solid fa-eye"></i> 浏览最多</button>
+        <button class="feed-tab" data-sort="comments"><i class="fa-solid fa-comments"></i> 最多评论</button>
       </div>
 
       <!-- Posts -->
@@ -415,8 +426,11 @@
       try{let url=`/api/posts?page=${currentPage}&sort=${currentSort}`;if(searchKeyword)url+=`&search=${encodeURIComponent(searchKeyword)}`;const d=await fetchAPI(url);const c=document.getElementById('postsContainer');d.posts.forEach(p=>c.appendChild(createPostCard(p)));hasMore=currentPage<d.pagination.totalPages;currentPage++;document.getElementById('emptyState').style.display=d.posts.length===0&&currentPage===2?'block':'none';renderPag(d.pagination);}catch(e){showToast('加载失败','error');}finally{isLoading=false;document.getElementById('loadingSpinner').style.display='none';}}
 
     function createPostCard(p){const d=document.createElement('div');d.className='post-card fade-up';const catIcons={confession:'💕',daily:'☕',expand:'🤝'};const catNames={confession:'表白',daily:'日常',expand:'扩列'};const catHtml=p.category?`<span class="post-category">${catIcons[p.category]||'💕'} ${catNames[p.category]||'表白'}</span>`:'';const tagsHtml=p.tags?.length?`<div class="post-tags">${p.tags.map(t=>`<span class="post-tag">#${t}</span>`).join('')}</div>`:'';const msgBtn=p.author_id?`<button class="post-action" onclick="event.stopPropagation();startChat('${p.author_id}')"><i class="fa-regular fa-envelope"></i> 私信</button>`:'';
-    d.innerHTML=`<div class="post-header"><img src="${p.author_avatar||'/img/loge.png'}" class="post-avatar"><div class="post-meta"><div class="post-author">${esc(p.author_name)}</div><div class="post-time">${getTimeAgo(p.created_at)}</div></div>${catHtml}</div><div class="post-title">${esc(p.title)}</div><div class="post-content">${esc(p.content.length>300?p.content.substring(0,300)+'...':p.content)}</div>${tagsHtml}<div class="post-footer"><button class="post-action ${p.isLiked?'liked':''}" onclick="event.stopPropagation();likePost('${p.id}',this)"><i class="fa-${p.isLiked?'solid':'regular'} fa-heart"></i> ${p.likes}</button><button class="post-action" onclick="event.stopPropagation();openDetail('${p.id}')"><i class="fa-regular fa-comment-dots"></i> ${p.comments_count}</button>${msgBtn}</div>`;
+    const isLong=p.content.length>150;const shortContent=isLong?p.content.substring(0,150)+'...':p.content;const fullContent=p.content;
+    d.innerHTML=`<div class="post-header"><img src="${p.author_avatar||'/img/loge.png'}" class="post-avatar"><div class="post-meta"><div class="post-author">${esc(p.author_name)}</div><div class="post-time">${getTimeAgo(p.created_at)}</div></div>${catHtml}</div><div class="post-title">${esc(p.title)}</div><div class="post-content" id="content-${p.id}">${esc(shortContent)}${isLong?`<a href="javascript:void(0)" onclick="event.stopPropagation();expandContent('${p.id}','${encodeURIComponent(fullContent)}')" style="color:#e74c6f;font-size:13px;font-weight:500;margin-left:4px">展开全文</a>`:''}</div>${tagsHtml}<div class="post-footer"><button class="post-action ${p.isLiked?'liked':''}" onclick="event.stopPropagation();likePost('${p.id}',this)"><i class="fa-${p.isLiked?'solid':'regular'} fa-heart"></i> ${p.likes}</button><button class="post-action" onclick="event.stopPropagation();openDetail('${p.id}')"><i class="fa-regular fa-comment-dots"></i> ${p.comments_count}</button><button class="post-action" style="cursor:default"><i class="fa-regular fa-eye"></i> ${p.views||0}</button>${msgBtn}</div>`;
     d.onclick=()=>openDetail(p.id);return d;}
+    function expandContent(id,content){const el=document.getElementById('content-'+id);if(el)el.innerHTML=decodeURIComponent(content)+` <a href="javascript:void(0)" onclick="event.stopPropagation();collapseContent('${id}','${content}')" style="color:#e74c6f;font-size:13px;font-weight:500;margin-left:4px">收起</a>`;}
+    function collapseContent(id,content){const el=document.getElementById('content-'+id);if(el){const full=decodeURIComponent(content);const short=full.substring(0,150)+'...';el.innerHTML=short+` <a href="javascript:void(0)" onclick="event.stopPropagation();expandContent('${id}','${content}')" style="color:#e74c6f;font-size:13px;font-weight:500;margin-left:4px">展开全文</a>`;}}
 
     async function openDetail(id){try{const d=await fetchAPI(`/api/posts/${id}`);const p=d.post,comments=d.comments;const tagsHtml=p.tags?.length?`<div class="post-tags">${p.tags.map(t=>`<span class="post-tag">#${t}</span>`).join('')}</div>`:'';const chatBtn=p.author_id&&currentUser&&p.author_id!==currentUser.id?`<button class="post-action" onclick="startChat('${p.author_id}')"><i class="fa-solid fa-envelope"></i> 私信</button>`:'';const delBtn=currentUser&&(p.author_id===currentUser.id||['admin','super_admin'].includes(currentUser.role))?`<button class="post-action" onclick="deletePost('${p.id}')"><i class="fa-solid fa-trash"></i></button>`:'';
     const commentsHtml=comments.map(c=>`<div class="comment-item"><img src="${c.author_avatar||'/img/loge.png'}"><div><div class="comment-author">${esc(c.author_name)}</div><div class="comment-text">${esc(c.content)}</div><div class="comment-time">${getTimeAgo(c.created_at)}</div></div></div>`).join('');
@@ -435,6 +449,7 @@
 
     async function checkUnread(){if(!token)return;try{const d=await fetchAPI('/api/chat/unread');const b=document.getElementById('unreadBadge');if(d.count>0){b.textContent=d.count>99?'99+':d.count;b.style.display='inline';}else b.style.display='none';}catch(e){}}
 
+    function doInlineSearch(){searchKeyword=document.getElementById('inlineSearchInput').value.trim();loadPosts(true);}
     function doSearch(){searchKeyword=document.getElementById('searchInput').value.trim();if(!searchKeyword)return;hideModal('searchModal');loadPosts(true);}
 
     // === Sidebar ===
