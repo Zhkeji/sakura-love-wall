@@ -2,298 +2,430 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>🌸 樱花表白墙</title>
   <link rel="icon" href="/img/yingzhenyu.ico">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    body{font-family:'Noto Sans SC',sans-serif;background:linear-gradient(135deg,#fdfbfb 0%,#ebedee 100%);background-color:#ffdee9;background-image:linear-gradient(0deg,#ffdee9 0%,#b5fffc 100%);min-height:100vh;color:#475569;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
-    ::-webkit-scrollbar{display:none}
-    .sakura-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none}
-    .petal{position:absolute;background-color:#ffc0cb;border-radius:150% 0 150% 0;animation:fall infinite linear}
-    @keyframes fall{0%{transform:translate(0,-10vh) rotate(0deg);opacity:1}100%{transform:translate(100px,110vh) rotate(360deg);opacity:0}}
-    .glass{background:rgba(255,255,255,0.7);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.6);box-shadow:0 4px 6px -1px rgba(0,0,0,0.05)}
-    .lo_ve{background:rgba(255,255,255,0.85)!important;border-radius:16px!important;padding:20px!important;margin-bottom:20px!important;box-shadow:0 4px 20px rgba(0,0,0,0.03)!important;border:1px solid rgba(255,255,255,0.9)!important;transition:transform 0.2s}
-    .lo_ve:hover{transform:translateY(-2px)}
-    .love_zero_ta{font-weight:700;color:#db2777;margin-bottom:8px;font-size:1.05rem;display:flex;align-items:center}
-    .love_zero_ta::before{content:'';display:inline-block;width:6px;height:16px;background:#db2777;margin-right:10px;border-radius:4px}
-    .love_zero_xx{color:#334155;font-size:0.95rem;line-height:1.7;margin-bottom:12px;word-wrap:break-word}
-    .love_zero_bz{font-size:0.75rem;color:#94a3b8;text-align:right;padding-top:8px;border-top:1px solid #f1f5f9}
-    .zknr{color:#3b82f6;cursor:pointer;font-size:0.85rem;margin-left:5px;font-weight:bold}
-    .like_btn,.comment_btn{background:transparent!important;border:none!important;font-size:0.9rem!important;cursor:pointer!important;display:flex!important;align-items:center!important;transition:all 0.2s!important;color:#64748b!important;font-weight:500!important;padding:6px 12px!important;border-radius:8px!important}
-    .like_btn:hover,.comment_btn:hover{background-color:#f8fafc!important}
-    .like_btn.liked{color:#ec4899!important}
-    .like_btn.liked i{animation:heartBeat 0.6s}
-    .comments_area{background-color:#f8fafc!important;padding:15px!important;border-radius:12px!important;margin-top:15px!important;display:none;animation:slideDown 0.3s}
-    .comment_item{background:white!important;padding:12px!important;border-radius:10px!important;margin-bottom:10px!important;box-shadow:0 1px 2px rgba(0,0,0,0.03)!important;border:1px solid #f1f5f9!important}
-    .comment_username{color:#db2777!important;font-weight:700!important;font-size:0.85rem!important;margin-bottom:4px!important}
-    .comment_content{font-size:0.9rem!important;color:#334155!important}
-    .comment_meta{font-size:0.7rem!important;color:#94a3b8!important;text-align:right!important;margin-top:5px!important}
-    .comment_name,.comment_textarea{width:100%!important;padding:10px!important;margin-bottom:8px!important;border:1px solid #e2e8f0!important;border-radius:8px!important;font-size:0.9rem!important;background:white!important;outline:none!important}
-    .comment_textarea{min-height:80px!important;resize:none!important;font-family:inherit!important}
-    .comment_name:focus,.comment_textarea:focus{border-color:#f472b6!important;box-shadow:0 0 0 3px rgba(244,114,182,0.1)!important}
-    .submit_comment{float:right!important;background:linear-gradient(to right,#ec4899,#f43f5e)!important;color:white!important;border:none!important;padding:8px 24px!important;border-radius:99px!important;font-size:0.85rem!important;font-weight:bold!important;cursor:pointer!important;box-shadow:0 4px 6px rgba(236,72,153,0.25)!important}
-    .submit_comment:active{transform:scale(0.95)}
-    .fanye{display:flex!important;justify-content:center!important;gap:10px!important;margin-top:30px!important}
-    .xyy,.syy,.fanye_sz{display:flex;align-items:center;justify-content:center;padding:8px 16px;background:rgba(255,255,255,0.9)!important;border-radius:99px!important;font-size:0.85rem!important;color:#db2777!important;box-shadow:0 2px 5px rgba(0,0,0,0.05);cursor:pointer;font-weight:600!important;border:none!important}
-    .fanye_sz:hover,.xyy:active,.syy:active{background:#db2777!important;color:white!important}
-    @keyframes heartBeat{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
-    @keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
-    #toast-container{position:fixed;top:90px;left:50%;transform:translateX(-50%);z-index:9999;pointer-events:none}
-    .toast-msg{background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);padding:10px 24px;border-radius:50px;box-shadow:0 5px 20px rgba(0,0,0,0.08);color:#333;font-size:0.9rem;margin-bottom:10px;display:flex;align-items:center;animation:toastIn 0.3s;border:1px solid #ffe4e6}
-    .toast-msg i{margin-right:8px;font-size:1.1rem}
-    .toast-msg.success i{color:#10b981}.toast-msg.error i{color:#f43f5e}
-    @keyframes toastIn{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
-    .modal-overlay{position:fixed;inset-0;background:rgba(0,0,0,0.4);backdrop-filter:blur(4px);z-index:50;opacity:0;pointer-events:none;transition:all 0.3s}
-    .modal-overlay.show{opacity:1;pointer-events:auto}
-    .modal-box{background:white;width:100%;max-width:28rem;border-radius:1.5rem;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);transform:scale(0.95);transition:all 0.3s;position:relative;overflow:hidden}
-    .modal-overlay.show .modal-box{transform:scale(1)}
-    .chat-bubble-sent{background:linear-gradient(to right,#ec4899,#f43f5e);color:white;border-radius:16px 16px 4px 16px;padding:10px 14px;max-width:70%;font-size:0.9rem}
-    .chat-bubble-recv{background:white;color:#334155;border:1px solid #f1f5f9;border-radius:16px 16px 16px 4px;padding:10px 14px;max-width:70%;font-size:0.9rem}
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Noto Sans SC',system-ui,sans-serif;background:#f8f6f4;color:#333;min-height:100vh}
+    a{color:#e74c6f;text-decoration:none}a:hover{color:#c4375a}
+    ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
+    .glass{background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+    .sakura-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:0.3}
+    .petal{position:absolute;background:#ffc0cb;border-radius:150% 0 150% 0;animation:fall infinite linear}
+    @keyframes fall{0%{transform:translate(0,-10vh) rotate(0deg);opacity:1}100%{transform:translate(80px,110vh) rotate(360deg);opacity:0}}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+    .fade-up{animation:fadeUp 0.4s ease-out}
+
+    /* === Header === */
+    .site-header{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.95);backdrop-filter:blur(16px);border-bottom:1px solid #f0e8e4}
+    .header-inner{max-width:1200px;margin:0 auto;padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between}
+    .logo{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:700;color:#e74c6f}
+    .logo img{width:32px;height:32px;border-radius:8px}
+    .header-nav{display:flex;align-items:center;gap:8px}
+    .header-nav a,.header-nav button{padding:8px 16px;border-radius:8px;font-size:14px;font-weight:500;transition:all 0.2s;border:none;cursor:pointer;background:none;color:#555}
+    .header-nav a:hover,.header-nav button:hover{background:#fff0f3;color:#e74c6f}
+    .btn-primary{background:linear-gradient(135deg,#e74c6f,#d63384)!important;color:#fff!important;box-shadow:0 2px 8px rgba(231,76,111,0.3)}
+    .btn-primary:hover{box-shadow:0 4px 16px rgba(231,76,111,0.4);transform:translateY(-1px)}
+
+    /* === Layout === */
+    .main-wrap{max-width:1200px;margin:0 auto;padding:24px;display:grid;grid-template-columns:1fr 300px;gap:24px;position:relative;z-index:1}
+    .feed-area{min-width:0}
+    .sidebar-area{position:sticky;top:84px;align-self:start}
+
+    /* === Hero Banner === */
+    .hero-banner{border-radius:16px;overflow:hidden;position:relative;height:200px;margin-bottom:24px;box-shadow:0 4px 20px rgba(0,0,0,0.06)}
+    .hero-banner img{width:100%;height:100%;object-fit:cover}
+    .hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.5),transparent);display:flex;align-items:flex-end;padding:24px}
+    .hero-overlay h2{color:#fff;font-size:24px;font-weight:700;text-shadow:0 2px 8px rgba(0,0,0,0.3)}
+    .hero-overlay p{color:rgba(255,255,255,0.8);font-size:14px;margin-top:4px}
+
+    /* === Tabs === */
+    .feed-tabs{display:flex;gap:4px;background:#fff;border-radius:12px;padding:4px;margin-bottom:20px;box-shadow:0 1px 4px rgba(0,0,0,0.04)}
+    .feed-tab{flex:1;text-align:center;padding:10px 0;border-radius:8px;font-size:14px;font-weight:500;color:#888;cursor:pointer;transition:all 0.2s;border:none;background:none}
+    .feed-tab.active{background:#e74c6f;color:#fff;box-shadow:0 2px 8px rgba(231,76,111,0.3)}
+    .feed-tab:hover:not(.active){background:#fff5f7;color:#e74c6f}
+
+    /* === Post Card === */
+    .post-card{background:#fff;border-radius:14px;padding:20px;margin-bottom:16px;box-shadow:0 1px 6px rgba(0,0,0,0.04);border:1px solid #f5f0ee;transition:all 0.2s;cursor:pointer}
+    .post-card:hover{box-shadow:0 4px 20px rgba(0,0,0,0.08);transform:translateY(-2px)}
+    .post-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+    .post-avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid #fce4ec}
+    .post-meta{flex:1}
+    .post-author{font-weight:600;font-size:15px;color:#333}
+    .post-time{font-size:12px;color:#aaa}
+    .post-category{font-size:12px;padding:3px 10px;border-radius:20px;background:#fff0f3;color:#e74c6f;font-weight:500}
+    .post-title{font-size:17px;font-weight:600;color:#222;margin-bottom:8px;line-height:1.5}
+    .post-content{font-size:14px;color:#555;line-height:1.7;margin-bottom:12px}
+    .post-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+    .post-tag{font-size:12px;padding:3px 10px;background:#f8f0f2;color:#c4375a;border-radius:6px}
+    .post-footer{display:flex;align-items:center;gap:16px;padding-top:12px;border-top:1px solid #f5f0ee}
+    .post-action{display:flex;align-items:center;gap:5px;font-size:13px;color:#999;cursor:pointer;padding:4px 8px;border-radius:6px;transition:all 0.2s;border:none;background:none}
+    .post-action:hover{background:#fff0f3;color:#e74c6f}
+    .post-action.liked{color:#e74c6f}
+    .post-action i{font-size:15px}
+
+    /* === Sidebar === */
+    .sidebar-card{background:#fff;border-radius:14px;padding:20px;margin-bottom:16px;box-shadow:0 1px 6px rgba(0,0,0,0.04);border:1px solid #f5f0ee}
+    .sidebar-card h3{font-size:15px;font-weight:600;color:#333;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+    .announcement-item{padding:10px 0;border-bottom:1px solid #f5f0ee;font-size:13px;color:#555}
+    .announcement-item:last-child{border-bottom:none}
+    .announcement-item .ann-title{font-weight:500;color:#333}
+    .announcement-item .ann-badge{font-size:11px;padding:1px 6px;border-radius:4px;margin-right:4px}
+    .ann-badge.info{background:#e8f4fd;color:#3498db}
+    .ann-badge.urgent{background:#fde8e8;color:#e74c3c}
+    .ann-badge.update{background:#e8fde8;color:#27ae60}
+
+    .stat-row{display:flex;justify-content:space-around;text-align:center;padding:8px 0}
+    .stat-num{font-size:24px;font-weight:700;color:#e74c6f}
+    .stat-label{font-size:12px;color:#aaa;margin-top:2px}
+
+    /* === Modal === */
+    .modal-mask{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);backdrop-filter:blur(4px);z-index:200;align-items:center;justify-content:center}
+    .modal-mask.show{display:flex}
+    .modal-box{background:#fff;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.15);width:90%;max-width:480px;max-height:85vh;overflow-y:auto;padding:32px;animation:fadeUp 0.3s}
+    .modal-box-lg{max-width:640px}
+    .modal-close{position:absolute;top:16px;right:16px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:none;background:#f5f0ee;border-radius:50%;cursor:pointer;font-size:18px;color:#999}
+    .modal-close:hover{background:#e8e0dc}
+    .form-group{margin-bottom:16px}
+    .form-group label{display:block;font-size:13px;font-weight:500;color:#666;margin-bottom:6px}
+    .form-input{width:100%;padding:10px 14px;border:1px solid #e8e0dc;border-radius:10px;font-size:14px;font-family:inherit;outline:none;transition:all 0.2s;background:#faf8f6}
+    .form-input:focus{border-color:#e74c6f;box-shadow:0 0 0 3px rgba(231,76,111,0.08);background:#fff}
+    textarea.form-input{min-height:100px;resize:vertical}
+    .form-check{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+    .form-check input{accent-color:#e74c6f}
+
+    /* === Toast === */
+    .toast-box{position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:999;pointer-events:none}
+    .toast-item{background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);padding:12px 24px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.1);font-size:14px;margin-bottom:8px;display:flex;align-items:center;gap:8px;animation:fadeUp 0.3s;border:1px solid #f0e8e4}
+    .toast-item.success{border-left:3px solid #27ae60}
+    .toast-item.error{border-left:3px solid #e74c3c}
+
+    /* === Splash === */
+    .splash-screen{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#ffdee9,#e8d5f5,#b5fffc);background-size:300% 300%;animation:gradientShift 5s ease infinite}
+    @keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+    .splash-content{text-align:center}
+    .splash-icon{font-size:80px;margin-bottom:16px;animation:float 3s ease-in-out infinite}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+    .splash-title{font-size:36px;font-weight:700;color:#c4375a;margin-bottom:8px}
+    .splash-desc{font-size:16px;color:#e74c6f;margin-bottom:32px}
+    .splash-btn{padding:14px 40px;background:#fff;color:#e74c6f;border:none;border-radius:30px;font-size:16px;font-weight:600;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.1);transition:all 0.3s}
+    .splash-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,0.15)}
+
+    /* === Popup Ann === */
+    .popup-ann{position:fixed;inset:0;background:rgba(0,0,0,0.4);backdrop-filter:blur(4px);z-index:300;display:none;align-items:center;justify-content:center}
+    .popup-ann.show{display:flex}
+    .popup-ann-box{background:#fff;border-radius:20px;padding:32px;max-width:420px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.2);animation:fadeUp 0.3s;text-align:center}
+    .popup-ann-icon{font-size:48px;margin-bottom:12px}
+    .popup-ann-title{font-size:20px;font-weight:700;color:#333;margin-bottom:12px}
+    .popup-ann-content{font-size:14px;color:#666;line-height:1.7;background:#f8f6f4;padding:16px;border-radius:12px;margin-bottom:20px;text-align:left}
+
+    /* === Detail Modal === */
+    .detail-author{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+    .detail-author img{width:48px;height:48px;border-radius:50%;object-fit:cover}
+    .detail-title{font-size:22px;font-weight:700;color:#222;margin-bottom:12px}
+    .detail-content{font-size:15px;color:#444;line-height:1.8;margin-bottom:16px;white-space:pre-wrap}
+    .detail-images{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin-bottom:16px}
+    .detail-images img{width:100%;border-radius:10px;cursor:pointer;transition:transform 0.2s}
+    .detail-images img:hover{transform:scale(1.02)}
+    .detail-actions{display:flex;gap:12px;padding:12px 0;border-top:1px solid #f0e8e4;border-bottom:1px solid #f0e8e4;margin-bottom:16px}
+    .comment-item{display:flex;gap:10px;padding:12px 0;border-bottom:1px solid #f5f0ee}
+    .comment-item img{width:32px;height:32px;border-radius:50%;object-fit:cover}
+    .comment-author{font-weight:600;font-size:13px;color:#333}
+    .comment-text{font-size:14px;color:#555;margin-top:2px}
+    .comment-time{font-size:11px;color:#bbb;margin-top:4px}
+
+    /* === Mobile Nav === */
+    .mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,0.95);backdrop-filter:blur(16px);border-top:1px solid #f0e8e4;z-index:100;justify-content:space-around;padding:8px 0}
+    .mobile-nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:#999;text-decoration:none;padding:4px 12px;border:none;background:none;cursor:pointer}
+    .mobile-nav-item i{font-size:20px}.mobile-nav-item.active{color:#e74c6f}
+
+    /* === Responsive === */
+    @media(max-width:768px){
+      .main-wrap{grid-template-columns:1fr;padding:16px}
+      .sidebar-area{display:none}
+      .hero-banner{height:160px}
+      .mobile-nav{display:flex}
+      body{padding-bottom:60px}
+      .header-inner{padding:0 16px}
+      .post-card{padding:16px}
+    }
+    @media(min-width:1200px){
+      .post-card .post-content{-webkit-line-clamp:5}
+    }
   </style>
 </head>
-<body class="flex flex-col items-center p-4 pb-20">
+<body>
   <div id="sakura-container" class="sakura-bg"></div>
-  <div id="toast-container"></div>
+  <div class="toast-box" id="toastBox"></div>
 
-  <!-- 开屏页面 -->
-  <div id="splashScreen" class="fixed inset-0 z-[100] flex items-center justify-center" style="background:linear-gradient(135deg,#ffdee9,#b5fffc);display:none">
-    <div class="text-center">
-      <div id="splashIcon" class="text-7xl mb-4">🌸</div>
-      <h1 id="splashTitle" class="font-bold text-3xl text-pink-600 mb-2">樱花表白墙</h1>
-      <p id="splashDesc" class="text-pink-400 mb-8">勇敢说出你的故事</p>
-      <button onclick="closeSplash()" class="bg-white text-pink-500 px-8 py-3 rounded-full font-bold shadow-lg hover:shadow-xl transition transform hover:scale-105">
-        <i class="fa-solid fa-heart mr-2"></i>进入表白墙
-      </button>
+  <!-- Splash -->
+  <div id="splashScreen" class="splash-screen" style="display:none">
+    <div class="splash-content">
+      <div class="splash-icon" id="splashIcon">🌸</div>
+      <h1 class="splash-title" id="splashTitle">樱花表白墙</h1>
+      <p class="splash-desc" id="splashDesc">勇敢说出你的故事</p>
+      <button class="splash-btn" onclick="closeSplash()"><i class="fa-solid fa-heart"></i> 进入表白墙</button>
     </div>
   </div>
 
-  <!-- 弹窗公告 -->
-  <div id="popupAnnouncement" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[90] flex items-center justify-center p-4" style="display:none" onclick="closePopupAnn()">
-    <div class="glass rounded-3xl p-8 w-full max-w-md shadow-2xl transform scale-95 transition-all duration-300" onclick="event.stopPropagation()" id="popupAnnBox">
-      <div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-r from-pink-200 to-rose-200 rounded-t-3xl"></div>
-      <div class="relative">
-        <div class="text-center mb-4">
-          <span id="popupAnnIcon" class="text-4xl">📢</span>
+  <!-- Popup Announcement -->
+  <div id="popupAnn" class="popup-ann" onclick="closePopupAnn()">
+    <div class="popup-ann-box" onclick="event.stopPropagation()">
+      <div class="popup-ann-icon" id="popupIcon">📢</div>
+      <h3 class="popup-ann-title" id="popupTitle"></h3>
+      <div class="popup-ann-content" id="popupContent"></div>
+      <button class="btn-primary" style="padding:12px 32px;border-radius:10px;font-size:15px;border:none;cursor:pointer" onclick="closePopupAnn()">我知道了</button>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="/" class="logo"><img src="/img/loge.png" alt=""> <span>樱花表白墙</span></a>
+      <div class="header-nav" id="headerNav">
+        <a href="/chat"><i class="fa-solid fa-envelope"></i> 私信 <span id="unreadBadge" style="display:none;background:#e74c3c;color:#fff;font-size:11px;padding:1px 6px;border-radius:10px;margin-left:4px"></span></a>
+        <div id="authBtns">
+          <button onclick="showModal('loginModal')">登录</button>
+          <button class="btn-primary" onclick="showModal('registerModal')">注册</button>
         </div>
-        <h3 id="popupAnnTitle" class="font-bold text-xl text-gray-800 text-center mb-3"></h3>
-        <div id="popupAnnContent" class="text-gray-600 text-sm leading-relaxed text-center mb-6 bg-gray-50 p-4 rounded-2xl"></div>
-        <button onclick="closePopupAnn()" class="w-full bg-gradient-to-r from-pink-500 to-rose-500 text-white py-3 rounded-xl font-bold shadow-lg active:scale-95 transition">
-          我知道了
-        </button>
+        <div id="userMenu" style="display:none">
+          <button onclick="showModal('postModal')" class="btn-primary"><i class="fa-solid fa-pen"></i> 写表白</button>
+          <div style="position:relative;display:inline-block">
+            <button onclick="toggleDropdown()" id="userBtn"><img id="navAvatar" src="/img/loge.png" style="width:32px;height:32px;border-radius:50%;vertical-align:middle"> <span id="navName"></span> <i class="fa-solid fa-chevron-down" style="font-size:11px;margin-left:4px"></i></button>
+            <div id="dropdown" style="display:none;position:absolute;right:0;top:calc(100% + 8px);background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.12);border:1px solid #f0e8e4;min-width:180px;z-index:50">
+              <a href="#" onclick="showProfile();return false" style="display:flex;align-items:center;gap:10px;padding:12px 16px;color:#333;font-size:14px"><i class="fa-solid fa-user" style="width:16px;text-align:center"></i> 个人资料</a>
+              <a href="/admin" id="adminLink" style="display:none;align-items:center;gap:10px;padding:12px 16px;color:#333;font-size:14px"><i class="fa-solid fa-gear" style="width:16px;text-align:center"></i> 管理后台</a>
+              <hr style="margin:4px 0;border:none;border-top:1px solid #f0e8e4">
+              <a href="#" onclick="logout();return false" style="display:flex;align-items:center;gap:10px;padding:12px 16px;color:#e74c3c;font-size:14px"><i class="fa-solid fa-right-from-bracket" style="width:16px;text-align:center"></i> 退出登录</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <div class="main-wrap">
+    <div class="feed-area">
+      <!-- Hero -->
+      <div class="hero-banner" onclick="showModal('postModal')" style="cursor:pointer">
+        <img src="/img/yh_hb.jpg" alt="">
+        <div class="hero-overlay">
+          <div><h2 id="siteName">樱花表白墙</h2><p><i class="fa-solid fa-bullhorn"></i> 点击这里发布你的故事</p></div>
+        </div>
+      </div>
+
+      <!-- Announcement Marquee -->
+      <div style="background:#fff;border-radius:12px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:10px;font-size:13px;color:#e74c6f;border:1px solid #f5f0ee">
+        <i class="fa-solid fa-bell" style="animation:bounce 1s infinite"></i>
+        <marquee id="annMarquee" style="flex:1;font-weight:500">欢迎来到樱花表白墙 🌸</marquee>
+      </div>
+
+      <!-- Tabs -->
+      <div class="feed-tabs">
+        <button class="feed-tab active" data-sort="latest"><i class="fa-solid fa-clock"></i> 最新</button>
+        <button class="feed-tab" data-sort="hot"><i class="fa-solid fa-fire"></i> 最热</button>
+        <button class="feed-tab" data-sort="comments"><i class="fa-solid fa-comments"></i> 评论</button>
+        <button class="feed-tab" onclick="showModal('searchModal')"><i class="fa-solid fa-magnifying-glass"></i> 搜索</button>
+      </div>
+
+      <!-- Posts -->
+      <div id="postsContainer"></div>
+      <div id="loadingSpinner" style="text-align:center;padding:40px;color:#ccc"><i class="fa-solid fa-spinner fa-spin" style="font-size:24px"></i></div>
+      <div id="emptyState" style="display:none;text-align:center;padding:60px;color:#aaa">
+        <div style="font-size:48px;margin-bottom:12px">💭</div>
+        <p>还没有表白，成为第一个勇敢的人吧！</p>
+      </div>
+      <div id="pagination" style="display:flex;justify-content:center;gap:8px;margin-top:20px"></div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar-area">
+      <!-- Stats -->
+      <div class="sidebar-card">
+        <h3><i class="fa-solid fa-chart-pie"></i> 数据</h3>
+        <div class="stat-row">
+          <div><div class="stat-num" id="statPosts">0</div><div class="stat-label">表白</div></div>
+          <div><div class="stat-num" id="statUsers">0</div><div class="stat-label">用户</div></div>
+        </div>
+      </div>
+      <!-- Announcements -->
+      <div class="sidebar-card">
+        <h3><i class="fa-solid fa-bullhorn"></i> 公告</h3>
+        <div id="sidebarAnn"><p style="color:#aaa;font-size:13px">暂无公告</p></div>
+      </div>
+      <!-- About -->
+      <div class="sidebar-card" style="text-align:center;color:#aaa;font-size:12px">
+        <p>🌸 樱花表白墙</p>
+        <p id="siteTime" style="margin-top:4px"></p>
       </div>
     </div>
   </div>
 
-  <!-- 顶部导航 -->
-  <nav class="fixed top-0 left-0 w-full z-40 glass px-4 py-3 flex justify-between items-center shadow-sm">
-    <div class="flex items-center space-x-2 cursor-pointer" onclick="showModal('profileModal')">
-      <img id="navAvatar" src="/img/loge.png" class="w-9 h-9 rounded-full border-2 border-pink-200 shadow-sm">
-      <span class="font-bold text-pink-600 text-lg tracking-wide" id="navName">樱花表白墙</span>
-    </div>
-    <div class="flex items-center space-x-2">
-      <div onclick="location.href='/chat'" class="relative bg-white/80 text-pink-500 px-3 py-1.5 rounded-full text-sm font-bold shadow cursor-pointer active:scale-95 transition">
-        <i class="fa-solid fa-envelope"></i>
-        <span id="unreadBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center" style="display:none">0</span>
-      </div>
-      <div id="authBtns">
-        <span onclick="showModal('loginModal')" class="bg-white/80 text-pink-500 px-4 py-1.5 rounded-full text-sm font-bold shadow cursor-pointer active:scale-95 transition">登录</span>
-        <span onclick="showModal('registerModal')" class="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-lg cursor-pointer active:scale-95 transition">注册</span>
-      </div>
-      <div id="userBtns" style="display:none">
-        <span onclick="showModal('postModal')" class="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-lg cursor-pointer active:scale-95 transition"><i class="fa-solid fa-feather-pointed mr-1"></i>去表白</span>
-      </div>
-    </div>
+  <!-- Mobile Nav -->
+  <nav class="mobile-nav">
+    <button class="mobile-nav-item active"><i class="fa-solid fa-home"></i><span>首页</span></button>
+    <button class="mobile-nav-item" onclick="showModal('postModal')"><i class="fa-solid fa-pen"></i><span>发布</span></button>
+    <button class="mobile-nav-item" onclick="location.href='/chat'"><i class="fa-solid fa-envelope"></i><span>私信</span></button>
+    <button class="mobile-nav-item" onclick="currentUser?showProfile():showModal('loginModal')"><i class="fa-solid fa-user"></i><span>我的</span></button>
   </nav>
 
-  <div class="h-16 w-full"></div>
-
-  <!-- 主内容 -->
-  <div class="w-full max-w-md space-y-5">
-    <!-- Banner -->
-    <div class="relative w-full h-40 rounded-2xl overflow-hidden shadow-lg group cursor-pointer" onclick="showModal('postModal')">
-      <img src="/img/yh_hb.jpg" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
-      <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-      <div class="absolute bottom-4 left-5 text-white">
-        <h3 class="font-bold text-lg drop-shadow-md" id="siteName">樱花表白墙</h3>
-        <p class="text-xs opacity-90"><i class="fa-solid fa-bullhorn mr-1"></i> 点击这里发布你的故事</p>
-      </div>
-    </div>
-
-    <!-- 公告 -->
-    <div class="glass rounded-xl px-4 py-3 flex items-center space-x-3 text-sm text-pink-600 border border-white/50">
-      <i class="fa-solid fa-bell animate-bounce text-pink-400"></i>
-      <marquee id="announcementMarquee" class="flex-1 font-medium">欢迎来到樱花表白墙 🌸 勇敢说出你的故事吧！</marquee>
-    </div>
-
-    <!-- 分类Tabs -->
-    <div class="glass p-1.5 rounded-xl flex justify-between items-center text-sm font-medium text-gray-500">
-      <div class="tab-btn flex-1 text-center py-2.5 rounded-lg cursor-pointer transition bg-white text-pink-500 shadow-sm" data-sort="latest"><i class="fa-solid fa-clock mb-1 block text-sm"></i>最新</div>
-      <div class="tab-btn flex-1 text-center py-2.5 rounded-lg cursor-pointer hover:bg-white/50 transition" data-sort="hot"><i class="fa-solid fa-fire mb-1 block text-sm"></i>最热</div>
-      <div class="tab-btn flex-1 text-center py-2.5 rounded-lg cursor-pointer hover:bg-white/50 transition" data-sort="comments"><i class="fa-solid fa-comments mb-1 block text-sm"></i>评论</div>
-      <div class="tab-btn flex-1 text-center py-2.5 rounded-lg cursor-pointer hover:bg-white/50 transition" onclick="showModal('searchModal')"><i class="fa-solid fa-magnifying-glass mb-1 block text-sm"></i>搜索</div>
-    </div>
-
-    <!-- 帖子列表 -->
-    <div id="postsContainer" class="space-y-4"></div>
-    <div id="loadingSpinner" class="text-center py-12 text-pink-400"><i class="fa-solid fa-spinner fa-spin text-2xl"></i><p class="mt-2 text-xs">少女祈祷中...</p></div>
-    <div id="emptyState" class="text-center py-12 text-gray-400" style="display:none"><div class="text-4xl mb-3">💭</div><p>还没有表白，成为第一个勇敢的人吧！</p></div>
-    <div class="fanye" id="pagination"></div>
-
-    <!-- 底部 -->
-    <div class="text-center space-y-2 py-8 opacity-70">
-      <span id="sitetime" class="text-xs text-gray-500 block font-mono"></span>
-      <p class="text-xs text-gray-400">🌸 樱花表白墙</p>
+  <!-- Login Modal -->
+  <div class="modal-mask" id="loginModal" onclick="hideModal('loginModal')">
+    <div class="modal-box" onclick="event.stopPropagation()" style="position:relative">
+      <button class="modal-close" onclick="hideModal('loginModal')">&times;</button>
+      <div style="text-align:center;margin-bottom:24px"><div style="font-size:48px;margin-bottom:8px">🌸</div><h2 style="font-size:22px;font-weight:700;color:#333">欢迎回来</h2><p style="color:#aaa;font-size:14px">登录你的账号</p></div>
+      <form onsubmit="doLogin(event)">
+        <div class="form-group"><label>用户名</label><input class="form-input" id="loginUser" required placeholder="请输入用户名"></div>
+        <div class="form-group"><label>密码</label><input class="form-input" type="password" id="loginPass" required placeholder="请输入密码"></div>
+        <button type="submit" class="btn-primary" style="width:100%;padding:12px;border-radius:10px;font-size:15px;border:none;cursor:pointer">登录</button>
+        <p style="text-align:center;margin-top:12px;font-size:13px;color:#aaa">没有账号？<a href="#" onclick="hideModal('loginModal');showModal('registerModal');return false">立即注册</a></p>
+      </form>
     </div>
   </div>
 
-  <!-- 登录弹窗 -->
-  <div class="modal-overlay" id="loginModal" onclick="hideModal('loginModal')">
-    <div class="modal-box mx-4 p-6" onclick="event.stopPropagation()">
-      <div class="absolute top-0 left-0 w-full h-20 bg-gradient-to-r from-pink-200 to-rose-200"></div>
-      <div class="relative text-center mt-6"><div class="text-4xl mb-2">🌸</div><h3 class="font-bold text-xl text-gray-800">欢迎回来</h3><p class="text-xs text-pink-500">登录你的账号</p></div>
-      <div class="mt-6 space-y-3">
-        <input id="loginUser" type="text" class="w-full px-4 py-3 bg-gray-50 border border-pink-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm" placeholder="用户名">
-        <input id="loginPass" type="password" class="w-full px-4 py-3 bg-gray-50 border border-pink-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm" placeholder="密码">
-        <button onclick="doLogin()" class="w-full bg-gradient-to-r from-pink-500 to-rose-500 text-white py-3 rounded-xl font-bold shadow-lg active:scale-95 transition">登录</button>
-        <p class="text-center text-sm text-gray-500">没有账号？<span class="text-pink-500 font-bold cursor-pointer" onclick="hideModal('loginModal');showModal('registerModal')">立即注册</span></p>
-      </div>
+  <!-- Register Modal -->
+  <div class="modal-mask" id="registerModal" onclick="hideModal('registerModal')">
+    <div class="modal-box" onclick="event.stopPropagation()" style="position:relative">
+      <button class="modal-close" onclick="hideModal('registerModal')">&times;</button>
+      <div style="text-align:center;margin-bottom:24px"><div style="font-size:48px;margin-bottom:8px">✨</div><h2 style="font-size:22px;font-weight:700;color:#333">创建账号</h2></div>
+      <form onsubmit="doRegister(event)">
+        <div class="form-group"><label>用户名</label><input class="form-input" id="regUser" required minlength="3" maxlength="20" placeholder="3-20个字符"></div>
+        <div class="form-group"><label>昵称</label><input class="form-input" id="regNick" required maxlength="20" placeholder="你的显示名称"></div>
+        <div class="form-group"><label>密码</label><input class="form-input" type="password" id="regPass" required minlength="6" placeholder="至少6个字符"></div>
+        <button type="submit" class="btn-primary" style="width:100%;padding:12px;border-radius:10px;font-size:15px;border:none;cursor:pointer">注册</button>
+        <p style="text-align:center;margin-top:12px;font-size:13px;color:#aaa">已有账号？<a href="#" onclick="hideModal('registerModal');showModal('loginModal');return false">去登录</a></p>
+      </form>
     </div>
   </div>
 
-  <!-- 注册弹窗 -->
-  <div class="modal-overlay" id="registerModal" onclick="hideModal('registerModal')">
-    <div class="modal-box mx-4 p-6" onclick="event.stopPropagation()">
-      <div class="absolute top-0 left-0 w-full h-20 bg-gradient-to-r from-pink-200 to-rose-200"></div>
-      <div class="relative text-center mt-6"><div class="text-4xl mb-2">✨</div><h3 class="font-bold text-xl text-gray-800">创建账号</h3></div>
-      <div class="mt-6 space-y-3">
-        <input id="regUser" type="text" class="w-full px-4 py-3 bg-gray-50 border border-pink-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm" placeholder="用户名 (3-20字符)">
-        <input id="regNick" type="text" class="w-full px-4 py-3 bg-gray-50 border border-pink-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm" placeholder="昵称">
-        <input id="regPass" type="password" class="w-full px-4 py-3 bg-gray-50 border border-pink-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm" placeholder="密码 (至少6位)">
-        <button onclick="doRegister()" class="w-full bg-gradient-to-r from-pink-500 to-rose-500 text-white py-3 rounded-xl font-bold shadow-lg active:scale-95 transition">注册</button>
-        <p class="text-center text-sm text-gray-500">已有账号？<span class="text-pink-500 font-bold cursor-pointer" onclick="hideModal('registerModal');showModal('loginModal')">去登录</span></p>
-      </div>
-    </div>
-  </div>
-
-  <!-- 发帖弹窗 -->
-  <div class="modal-overlay" id="postModal" onclick="hideModal('postModal')">
-    <div class="modal-box mx-4 p-6 max-w-lg" onclick="event.stopPropagation()">
-      <div class="absolute top-0 left-0 w-full h-20 bg-gradient-to-r from-pink-200 to-rose-200"></div>
-      <div class="relative flex justify-between items-center mt-2"><h3 class="font-bold text-xl text-gray-800">💌 写一封表白</h3><button onclick="hideModal('postModal')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button></div>
-      <div class="mt-6 space-y-3">
-        <input id="postTitle" type="text" class="w-full px-4 py-3 bg-gray-50 border border-pink-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm" placeholder="标题" maxlength="100">
-        <textarea id="postContent" class="w-full px-4 py-3 bg-gray-50 border border-pink-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm min-h-[120px] resize-none" placeholder="写下你想说的话..." maxlength="5000"></textarea>
-        <input id="postTags" type="text" class="w-full px-4 py-3 bg-gray-50 border border-pink-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm" placeholder="标签 (逗号分隔，如: 暗恋,校园)">
-        <div class="flex items-center space-x-4">
-          <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" id="postAnon" class="accent-pink-500"><span class="text-sm text-gray-600">匿名发布</span></label>
-          <select id="postCat" class="px-3 py-2 bg-gray-50 border border-pink-100 rounded-xl text-sm">
-            <option value="confession">表白</option><option value="daily">日常</option><option value="expand">扩列</option>
-          </select>
+  <!-- Post Modal -->
+  <div class="modal-mask" id="postModal" onclick="hideModal('postModal')">
+    <div class="modal-box modal-box-lg" onclick="event.stopPropagation()" style="position:relative">
+      <button class="modal-close" onclick="hideModal('postModal')">&times;</button>
+      <h2 style="font-size:20px;font-weight:700;margin-bottom:20px">💌 写一封表白</h2>
+      <form onsubmit="doPost(event)">
+        <div class="form-group"><label>标题</label><input class="form-input" id="postTitle" required maxlength="100" placeholder="给你的表白起个标题"></div>
+        <div class="form-group"><label>内容</label><textarea class="form-input" id="postContent" required maxlength="5000" placeholder="写下你想说的话..."></textarea></div>
+        <div class="form-group"><label>标签 <span style="color:#aaa;font-weight:400">(逗号分隔)</span></label><input class="form-input" id="postTags" placeholder="如: 暗恋,校园"></div>
+        <div style="display:flex;gap:16px;margin-bottom:16px">
+          <label class="form-check"><input type="checkbox" id="postAnon"><span style="font-size:14px">匿名发布</span></label>
+          <select class="form-input" id="postCat" style="width:auto;padding:8px 12px"><option value="confession">💕 表白</option><option value="daily">☕ 日常</option><option value="expand">🤝 扩列</option></select>
         </div>
-        <button onclick="doPost()" class="w-full bg-gradient-to-r from-pink-500 to-rose-500 text-white py-3 rounded-xl font-bold shadow-lg active:scale-95 transition"><i class="fa-solid fa-paper-plane mr-2"></i>发布</button>
+        <button type="submit" class="btn-primary" style="width:100%;padding:12px;border-radius:10px;font-size:15px;border:none;cursor:pointer"><i class="fa-solid fa-paper-plane"></i> 发布</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Search Modal -->
+  <div class="modal-mask" id="searchModal" onclick="hideModal('searchModal')">
+    <div class="modal-box" onclick="event.stopPropagation()" style="position:relative">
+      <button class="modal-close" onclick="hideModal('searchModal')">&times;</button>
+      <h2 style="font-size:20px;font-weight:700;margin-bottom:16px">🔍 搜索</h2>
+      <div style="display:flex;gap:8px">
+        <input class="form-input" id="searchInput" placeholder="输入关键词..." style="flex:1">
+        <button class="btn-primary" onclick="doSearch()" style="padding:10px 20px;border-radius:10px;border:none;cursor:pointer">搜索</button>
       </div>
     </div>
   </div>
 
-  <!-- 搜索弹窗 -->
-  <div class="modal-overlay" id="searchModal" onclick="hideModal('searchModal')">
-    <div class="modal-box mx-4 p-6" onclick="event.stopPropagation()">
-      <h3 class="font-bold text-xl text-gray-800 mb-4">🔍 搜索</h3>
-      <div class="relative">
-        <i class="fa-solid fa-search absolute left-4 top-3.5 text-pink-300"></i>
-        <input id="searchInput" type="text" class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-pink-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm" placeholder="输入关键词...">
+  <!-- Profile Modal -->
+  <div class="modal-mask" id="profileModal" onclick="hideModal('profileModal')">
+    <div class="modal-box" onclick="event.stopPropagation()" style="position:relative">
+      <button class="modal-close" onclick="hideModal('profileModal')">&times;</button>
+      <div style="text-align:center;margin-bottom:20px">
+        <img id="profileAvatar" src="/img/loge.png" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid #fce4ec">
+        <h3 id="profileName" style="font-size:18px;font-weight:700;margin-top:10px">未登录</h3>
+        <p id="profileBio" style="font-size:13px;color:#aaa"></p>
       </div>
-      <button onclick="doSearch()" class="w-full bg-gradient-to-r from-pink-500 to-rose-500 text-white py-3 rounded-xl font-bold shadow-lg mt-3 active:scale-95 transition">搜索</button>
-    </div>
-  </div>
-
-  <!-- 个人中心弹窗 -->
-  <div class="modal-overlay" id="profileModal" onclick="hideModal('profileModal')">
-    <div class="modal-box mx-4 p-6" onclick="event.stopPropagation()">
-      <div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-r from-pink-200 to-rose-200"></div>
-      <div class="relative text-center mt-8">
-        <img id="profileAvatar" src="/img/loge.png" class="w-24 h-24 rounded-full mx-auto border-4 border-white shadow-md bg-white">
-        <h3 id="profileName" class="font-bold text-xl text-gray-800 mt-3">未登录</h3>
-        <p id="profileBio" class="text-xs text-pink-500"></p>
+      <div id="profileLoggedOut" style="text-align:center">
+        <button class="btn-primary" onclick="hideModal('profileModal');showModal('loginModal')" style="padding:12px 32px;border-radius:10px;border:none;cursor:pointer">去登录</button>
       </div>
-      <div id="profileLoggedOut" class="mt-6 text-center">
-        <p class="text-gray-500 mb-4">登录后查看更多</p>
-        <button onclick="hideModal('profileModal');showModal('loginModal')" class="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-8 py-3 rounded-xl font-bold shadow-lg">去登录</button>
-      </div>
-      <div id="profileLoggedIn" class="mt-6 space-y-3" style="display:none">
-        <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100 space-y-3 text-sm">
-          <div><label class="text-gray-500 text-xs">昵称</label><input id="editNick" class="w-full mt-1 px-3 py-2 border border-pink-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"></div>
-          <div><label class="text-gray-500 text-xs">简介</label><textarea id="editBio" class="w-full mt-1 px-3 py-2 border border-pink-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 min-h-[60px] resize-none"></textarea></div>
-          <button onclick="doUpdateProfile()" class="w-full bg-pink-50 text-pink-500 py-2 rounded-xl font-bold hover:bg-pink-100 transition">保存资料</button>
+      <div id="profileLoggedIn" style="display:none">
+        <div class="form-group"><label>昵称</label><input class="form-input" id="editNick"></div>
+        <div class="form-group"><label>简介</label><textarea class="form-input" id="editBio" rows="3"></textarea></div>
+        <button class="btn-primary" onclick="doUpdateProfile()" style="width:100%;padding:10px;border-radius:10px;border:none;cursor:pointer;margin-bottom:12px">保存资料</button>
+        <div style="border-top:1px solid #f0e8e4;padding-top:12px">
+          <p style="font-weight:600;font-size:14px;margin-bottom:8px">修改密码</p>
+          <div class="form-group"><input class="form-input" type="password" id="editOldPwd" placeholder="旧密码"></div>
+          <div class="form-group"><input class="form-input" type="password" id="editNewPwd" placeholder="新密码"></div>
+          <button onclick="doChangePwd()" style="width:100%;padding:10px;border-radius:10px;border:1px solid #e8e0dc;background:#fff;cursor:pointer;font-size:14px">修改密码</button>
         </div>
-        <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100 space-y-3 text-sm">
-          <p class="font-bold text-gray-700">修改密码</p>
-          <input id="editOldPwd" type="password" class="w-full px-3 py-2 border border-pink-100 rounded-lg text-sm" placeholder="旧密码">
-          <input id="editNewPwd" type="password" class="w-full px-3 py-2 border border-pink-100 rounded-lg text-sm" placeholder="新密码">
-          <button onclick="doChangePwd()" class="w-full bg-pink-50 text-pink-500 py-2 rounded-xl font-bold hover:bg-pink-100 transition">修改密码</button>
-        </div>
-        <div class="flex space-x-2">
-          <a href="/admin" class="flex-1 text-center bg-gray-100 text-gray-600 py-2 rounded-xl font-bold text-sm hover:bg-gray-200 transition" id="adminLink" style="display:none"><i class="fa-solid fa-gear mr-1"></i>后台</a>
-          <button onclick="doLogout()" class="flex-1 bg-red-50 text-red-500 py-2 rounded-xl font-bold text-sm hover:bg-red-100 transition">退出登录</button>
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <a href="/admin" id="profileAdminLink" style="display:none;flex:1;text-align:center;padding:10px;border-radius:10px;border:1px solid #e8e0dc;font-size:14px;color:#555"><i class="fa-solid fa-gear"></i> 管理后台</a>
+          <button onclick="logout()" style="flex:1;padding:10px;border-radius:10px;border:1px solid #fde8e8;background:#fff5f5;color:#e74c3c;cursor:pointer;font-size:14px">退出登录</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- 帖子详情弹窗 -->
-  <div class="modal-overlay" id="detailModal" onclick="hideModal('detailModal')">
-    <div class="modal-box mx-4 p-6 max-w-lg max-h-[85vh] overflow-y-auto" onclick="event.stopPropagation()">
+  <!-- Detail Modal -->
+  <div class="modal-mask" id="detailModal" onclick="hideModal('detailModal')">
+    <div class="modal-box modal-box-lg" onclick="event.stopPropagation()" style="position:relative;max-height:85vh;overflow-y:auto">
+      <button class="modal-close" onclick="hideModal('detailModal')">&times;</button>
       <div id="detailContent"></div>
     </div>
   </div>
 
   <script>
     const API='';
-    let token=localStorage.getItem('token'),currentUser=null,currentPage=1,currentSort='latest',isLoading=false,hasMore=true,searchKeyword='';
+    let token=localStorage.getItem('token'),currentUser=null,currentPage=1,currentSort='latest',searchKeyword='',isLoading=false,hasMore=true;
 
-    // === Sakura Effect ===
-    function createSakura(){const c=document.getElementById('sakura-container'),p=document.createElement('div');p.classList.add('petal');const s=Math.random()*10+5,l=Math.random()*100,d=Math.random()*5+5;p.style.width=s+'px';p.style.height=s+'px';p.style.left=l+'%';p.style.animationDuration=d+'s';c.appendChild(p);setTimeout(()=>p.remove(),d*1000);}
-    setInterval(createSakura,600);
+    // === Sakura ===
+    function createSakura(){const c=document.getElementById('sakura-container'),p=document.createElement('div');p.classList.add('petal');const s=Math.random()*8+4,l=Math.random()*100,d=Math.random()*6+4;p.style.cssText=`width:${s}px;height:${s}px;left:${l}%;animation-duration:${s}s`;c.appendChild(p);setTimeout(()=>p.remove(),d*1000);}
+    setInterval(createSakura,800);
 
     // === Toast ===
-    function showToast(msg,type='success'){const c=document.getElementById('toast-container'),t=document.createElement('div');const icon=type==='success'?'<i class="fa-solid fa-circle-check"></i>':'<i class="fa-solid fa-circle-exclamation"></i>';t.className=`toast-msg ${type}`;t.innerHTML=`${icon}<span>${msg}</span>`;c.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transform='translateY(-20px)';setTimeout(()=>t.remove(),300);},3000);}
+    function showToast(msg,type='success'){const c=document.getElementById('toastBox'),t=document.createElement('div');t.className=`toast-item ${type}`;t.innerHTML=`<i class="fa-solid fa-circle-${type==='success'?'check':'exclamation'}" style="color:${type==='success'?'#27ae60':'#e74c3c'}"></i> ${msg}`;c.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transform='translateY(-10px)';setTimeout(()=>t.remove(),300);},3000);}
 
     // === Modal ===
-    function showModal(id){document.getElementById(id).classList.add('show');}
-    function hideModal(id){document.getElementById(id).classList.remove('show');}
+    function showModal(id){document.getElementById(id).classList.add('show');document.body.style.overflow='hidden';}
+    function hideModal(id){document.getElementById(id).classList.remove('show');document.body.style.overflow='';}
+    function toggleDropdown(){document.getElementById('dropdown').style.display=document.getElementById('dropdown').style.display==='block'?'none':'block';}
+    document.addEventListener('click',e=>{if(!e.target.closest('#userBtn'))document.getElementById('dropdown').style.display='none';});
 
     // === API ===
     async function fetchAPI(url,method='GET',body){const h={'Content-Type':'application/json'};if(token)h['Authorization']=`Bearer ${token}`;const o={method,headers:h};if(body)o.body=JSON.stringify(body);const r=await fetch(API+url,o);const d=await r.json();if(!r.ok)throw new Error(d.error||'请求失败');return d;}
 
     // === Auth ===
-    async function initAuth(){if(token){try{const d=await fetchAPI('/api/auth/me');currentUser=d.user;updateUI();checkUnread();}catch(e){localStorage.removeItem('token');token=null;}}}
-    function updateUI(){if(currentUser){document.getElementById('authBtns').style.display='none';document.getElementById('userBtns').style.display='flex';document.getElementById('navAvatar').src=currentUser.avatar||'/img/loge.png';document.getElementById('navName').textContent=currentUser.nickname;document.getElementById('profileName').textContent=currentUser.nickname;document.getElementById('profileBio').textContent=currentUser.bio||'';document.getElementById('profileAvatar').src=currentUser.avatar||'/img/loge.png';document.getElementById('profileLoggedOut').style.display='none';document.getElementById('profileLoggedIn').style.display='block';document.getElementById('editNick').value=currentUser.nickname||'';document.getElementById('editBio').value=currentUser.bio||'';if(['admin','super_admin'].includes(currentUser.role))document.getElementById('adminLink').style.display='block';}else{document.getElementById('authBtns').style.display='flex';document.getElementById('userBtns').style.display='none';document.getElementById('navName').textContent='樱花表白墙';document.getElementById('profileLoggedOut').style.display='block';document.getElementById('profileLoggedIn').style.display='none';}}
+    async function initAuth(){if(token){try{const d=await fetchAPI('/api/auth/me');currentUser=d.user;updateUI();checkUnread();}catch(e){localStorage.removeItem('token');token=***}}}
+    function updateUI(){if(currentUser){document.getElementById('authBtns').style.display='none';document.getElementById('userMenu').style.display='flex';document.getElementById('navAvatar').src=currentUser.avatar||'/img/loge.png';document.getElementById('navName').textContent=currentUser.nickname;if(['admin','super_admin'].includes(currentUser.role))document.getElementById('adminLink').style.display='flex';}else{document.getElementById('authBtns').style.display='flex';document.getElementById('userMenu').style.display='none';}}
 
-    async function doLogin(){const u=document.getElementById('loginUser').value.trim(),p=document.getElementById('loginPass').value.trim();if(!u||!p)return showToast('请输入账号密码','error');try{const d=await fetchAPI('/api/auth/login','POST',{username:u,password:p});token=d.token;currentUser=d.user;localStorage.setItem('token',token);updateUI();hideModal('loginModal');showToast('登录成功 🌸');loadPosts();}catch(e){showToast(e.message,'error');}}
-    async function doRegister(){const u=document.getElementById('regUser').value.trim(),n=document.getElementById('regNick').value.trim(),p=document.getElementById('regPass').value.trim();if(!u||!n||!p)return showToast('请填写完整','error');if(p.length<6)return showToast('密码至少6位','error');try{const d=await fetchAPI('/api/auth/register','POST',{username:u,password:p,nickname:n});token=d.token;currentUser=d.user;localStorage.setItem('token',token);updateUI();hideModal('registerModal');showToast('注册成功 🌸');loadPosts();}catch(e){showToast(e.message,'error');}}
-    function doLogout(){token=null;currentUser=null;localStorage.removeItem('token');updateUI();hideModal('profileModal');showToast('已退出','success');}
-    async function doUpdateProfile(){const n=document.getElementById('editNick').value.trim(),b=document.getElementById('editBio').value.trim();if(!n)return showToast('昵称不能为空','error');try{const d=await fetchAPI('/api/auth/profile','PUT',{nickname:n,bio:b});currentUser=d.user;localStorage.setItem('token',token);updateUI();showToast('已保存');}catch(e){showToast(e.message,'error');}}
-    async function doChangePwd(){const o=document.getElementById('editOldPwd').value,n=document.getElementById('editNewPwd').value;if(!o||!n)return showToast('请输入密码','error');if(n.length<6)return showToast('新密码至少6位','error');try{await fetchAPI('/api/auth/password','PUT',{oldPassword:o,newPassword:n});showToast('密码已修改');document.getElementById('editOldPwd').value='';document.getElementById('editNewPwd').value='';}catch(e){showToast(e.message,'error');}}
+    async function doLogin(e){e.preventDefault();try{const d=await fetchAPI('/api/auth/login','POST',{username:document.getElementById('loginUser').value,password:document.getElementById('loginPass').value});token=d.token;currentUser=d.user;localStorage.setItem('token',token);updateUI();hideModal('loginModal');showToast('登录成功 🌸');loadPosts(true);}catch(e){showToast(e.message,'error');}}
+    async function doRegister(e){e.preventDefault();const p=document.getElementById('regPass').value;if(p.length<6)return showToast('密码至少6位','error');try{const d=await fetchAPI('/api/auth/register','POST',{username:document.getElementById('regUser').value,password:p,nickname:document.getElementById('regNick').value});token=d.token;currentUser=d.user;localStorage.setItem('token',token);updateUI();hideModal('registerModal');showToast('注册成功 🌸');loadPosts(true);}catch(e){showToast(e.message,'error');}}
+    function logout(){token=null;currentUser=null;localStorage.removeItem('token');updateUI();showToast('已退出');}
+    function showProfile(){if(!currentUser)return showModal('loginModal');document.getElementById('profileAvatar').src=currentUser.avatar||'/img/loge.png';document.getElementById('profileName').textContent=currentUser.nickname;document.getElementById('profileBio').textContent=currentUser.bio||'';document.getElementById('profileLoggedOut').style.display='none';document.getElementById('profileLoggedIn').style.display='block';document.getElementById('editNick').value=currentUser.nickname||'';document.getElementById('editBio').value=currentUser.bio||'';if(['admin','super_admin'].includes(currentUser.role))document.getElementById('profileAdminLink').style.display='block';showModal('profileModal');}
+    async function doUpdateProfile(){try{const d=await fetchAPI('/api/auth/profile','PUT',{nickname:document.getElementById('editNick').value,bio:document.getElementById('editBio').value});currentUser=d.user;updateUI();showToast('已保存');}catch(e){showToast(e.message,'error');}}
+    async function doChangePwd(){try{await fetchAPI('/api/auth/password','PUT',{oldPassword:document.getElementById('editOldPwd').value,newPassword:document.getElementById('editNewPwd').value});showToast('密码已修改');}catch(e){showToast(e.message,'error');}}
+
+    // === Splash ===
+    async function loadSplash(){try{const d=await fetchAPI('/api/admin/settings');const s=d.settings;if(s.splashEnabled==='true'){document.getElementById('splashIcon').textContent=s.splashIcon||'🌸';document.getElementById('splashTitle').textContent=s.splashTitle||'樱花表白墙';document.getElementById('splashDesc').textContent=s.splashDesc||'勇敢说出你的故事';document.getElementById('splashScreen').style.display='flex';}}catch(e){}}
+    function closeSplash(){const s=document.getElementById('splashScreen');s.style.opacity='0';s.style.transition='opacity 0.5s';setTimeout(()=>s.style.display='none',500);}
+
+    // === Popup Ann ===
+    async function loadPopupAnn(){try{const seen=localStorage.getItem('popupAnnSeen');const d=await fetchAPI('/api/announcements/popup');if(d.announcement&&(!seen||seen!==d.announcement.id)){const a=d.announcement;const icons={info:'📢',urgent:'🚨',update:'✨'};document.getElementById('popupIcon').textContent=icons[a.type]||'📢';document.getElementById('popupTitle').textContent=a.title;document.getElementById('popupContent').textContent=a.content;document.getElementById('popupAnn').classList.add('show');localStorage.setItem('popupAnnSeen',a.id);}}catch(e){}}
+    function closePopupAnn(){document.getElementById('popupAnn').classList.remove('show');}
 
     // === Posts ===
     async function loadPosts(reset=false){if(isLoading)return;if(reset){currentPage=1;hasMore=true;document.getElementById('postsContainer').innerHTML='';}if(!hasMore)return;isLoading=true;document.getElementById('loadingSpinner').style.display='block';document.getElementById('emptyState').style.display='none';
-      try{let url=`/api/posts?page=${currentPage}&sort=${currentSort}`;if(searchKeyword)url+=`&search=${encodeURIComponent(searchKeyword)}`;const d=await fetchAPI(url);const c=document.getElementById('postsContainer');d.posts.forEach(p=>c.appendChild(createPostCard(p)));hasMore=currentPage<d.pagination.totalPages;currentPage++;document.getElementById('emptyState').style.display=d.posts.length===0&&currentPage===2?'block':'none';renderPagination(d.pagination);}catch(e){showToast('加载失败','error');}finally{isLoading=false;document.getElementById('loadingSpinner').style.display='none';}}
+      try{let url=`/api/posts?page=${currentPage}&sort=${currentSort}`;if(searchKeyword)url+=`&search=${encodeURIComponent(searchKeyword)}`;const d=await fetchAPI(url);const c=document.getElementById('postsContainer');d.posts.forEach(p=>c.appendChild(createPostCard(p)));hasMore=currentPage<d.pagination.totalPages;currentPage++;document.getElementById('emptyState').style.display=d.posts.length===0&&currentPage===2?'block':'none';renderPag(d.pagination);}catch(e){showToast('加载失败','error');}finally{isLoading=false;document.getElementById('loadingSpinner').style.display='none';}}
 
-    function createPostCard(p){const d=document.createElement('div');d.className='lo_ve';const tags=p.tags&&p.tags.length?`<div class="flex flex-wrap gap-1 mb-2">${p.tags.map(t=>`<span class="bg-pink-50 text-pink-500 text-xs px-2 py-0.5 rounded-full">#${t}</span>`).join('')}</div>`:'';const catIcons={confession:'💕',daily:'☕',expand:'🤝'};const catNames={confession:'表白',daily:'日常',expand:'扩列'};const catHtml=p.category?`<span class="text-xs bg-pink-50 text-pink-400 px-2 py-0.5 rounded-full mr-2">${catIcons[p.category]||'💕'} ${catNames[p.category]||'表白'}</span>`:'';
-    d.innerHTML=`<div class="love_zero_ta">${p.title}</div>${tags}<p class="love_zero_xx">${p.content.length>200?p.content.substring(0,200)+'<span class="zknr" onclick="event.stopPropagation();openDetail(\''+p.id+'\')">[全文]</span>':p.content}</p><div class="love_actions flex justify-between items-center pt-3 border-t border-gray-100 mt-3"><button class="like_btn ${p.isLiked?'liked':''}" onclick="event.stopPropagation();likePost('${p.id}',this)"><i class="fa-${p.isLiked?'solid':'regular'} fa-heart"></i> ${p.likes}</button><button class="comment_btn" onclick="event.stopPropagation();openDetail('${p.id}')"><i class="fa-regular fa-comment-dots"></i> ${p.comments_count}</button>${p.author_id?`<button class="comment_btn" onclick="event.stopPropagation();startChat('${p.author_id}')"><i class="fa-regular fa-envelope"></i></button>`:''}</div><div class="love_zero_bz mt-2">${catHtml}${p.author_name} · ${getTimeAgo(p.created_at)}</div>`;
-    d.style.cursor='pointer';d.onclick=()=>openDetail(p.id);return d;}
+    function createPostCard(p){const d=document.createElement('div');d.className='post-card fade-up';const catIcons={confession:'💕',daily:'☕',expand:'🤝'};const catNames={confession:'表白',daily:'日常',expand:'扩列'};const catHtml=p.category?`<span class="post-category">${catIcons[p.category]||'💕'} ${catNames[p.category]||'表白'}</span>`:'';const tagsHtml=p.tags?.length?`<div class="post-tags">${p.tags.map(t=>`<span class="post-tag">#${t}</span>`).join('')}</div>`:'';const msgBtn=p.author_id?`<button class="post-action" onclick="event.stopPropagation();startChat('${p.author_id}')"><i class="fa-regular fa-envelope"></i> 私信</button>`:'';
+    d.innerHTML=`<div class="post-header"><img src="${p.author_avatar||'/img/loge.png'}" class="post-avatar"><div class="post-meta"><div class="post-author">${esc(p.author_name)}</div><div class="post-time">${getTimeAgo(p.created_at)}</div></div>${catHtml}</div><div class="post-title">${esc(p.title)}</div><div class="post-content">${esc(p.content.length>300?p.content.substring(0,300)+'...':p.content)}</div>${tagsHtml}<div class="post-footer"><button class="post-action ${p.isLiked?'liked':''}" onclick="event.stopPropagation();likePost('${p.id}',this)"><i class="fa-${p.isLiked?'solid':'regular'} fa-heart"></i> ${p.likes}</button><button class="post-action" onclick="event.stopPropagation();openDetail('${p.id}')"><i class="fa-regular fa-comment-dots"></i> ${p.comments_count}</button>${msgBtn}</div>`;
+    d.onclick=()=>openDetail(p.id);return d;}
 
-    async function openDetail(id){try{const d=await fetchAPI(`/api/posts/${id}`);const p=d.post,comments=d.comments;const tagsHtml=p.tags?.length?`<div class="flex flex-wrap gap-1 mb-3">${p.tags.map(t=>`<span class="bg-pink-50 text-pink-500 text-xs px-2 py-0.5 rounded-full">#${t}</span>`).join('')}</div>`:'';const chatBtn=p.author_id&&currentUser&&p.author_id!==currentUser.id?`<button onclick="startChat('${p.author_id}')" class="text-pink-500 bg-pink-50 px-3 py-1 rounded-full text-xs font-bold"><i class="fa-solid fa-envelope mr-1"></i>私信</button>`:'';const delBtn=currentUser&&(p.author_id===currentUser.id||['admin','super_admin'].includes(currentUser.role))?`<button onclick="deletePost('${p.id}')" class="text-red-400 text-xs ml-2"><i class="fa-solid fa-trash"></i></button>`:'';
-    const commentsHtml=comments.map(c=>`<div class="comment_item"><div class="comment_username">${c.author_name||'匿名'}</div><div class="comment_content">${c.content}</div><div class="comment_meta">${getTimeAgo(c.created_at)}</div></div>`).join('');
-    document.getElementById('detailContent').innerHTML=`<div class="love_zero_ta text-lg">${p.title}</div>${tagsHtml}<p class="love_zero_xx text-base leading-relaxed my-3">${p.content}</p><div class="flex items-center justify-between text-xs text-gray-400 mb-4"><span>${p.author_name} · ${getTimeAgo(p.created_at)}</span><div class="flex items-center space-x-2">${chatBtn}${delBtn}</div></div><div class="flex items-center space-x-3 mb-4"><button class="like_btn ${p.isLiked?'liked':''}" onclick="likePost('${p.id}',this)"><i class="fa-${p.isLiked?'solid':'regular'} fa-heart"></i> ${p.likes}</button><span class="text-gray-400 text-sm">💬 ${p.comments_count}</span></div><div class="border-t border-gray-100 pt-4"><h4 class="font-bold text-gray-700 mb-3">评论 (${comments.length})</h4><div class="space-y-2 mb-4">${commentsHtml||'<p class="text-gray-400 text-sm text-center py-4">暂无评论</p>'}</div><div class="flex space-x-2"><input id="detailCommentInput" class="flex-1 px-4 py-2 border border-pink-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-300" placeholder="写下评论..."><button onclick="submitComment('${p.id}')" class="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-4 py-2 rounded-xl text-sm font-bold">发送</button></div></div>`;
+    async function openDetail(id){try{const d=await fetchAPI(`/api/posts/${id}`);const p=d.post,comments=d.comments;const tagsHtml=p.tags?.length?`<div class="post-tags">${p.tags.map(t=>`<span class="post-tag">#${t}</span>`).join('')}</div>`:'';const chatBtn=p.author_id&&currentUser&&p.author_id!==currentUser.id?`<button class="post-action" onclick="startChat('${p.author_id}')"><i class="fa-solid fa-envelope"></i> 私信</button>`:'';const delBtn=currentUser&&(p.author_id===currentUser.id||['admin','super_admin'].includes(currentUser.role))?`<button class="post-action" onclick="deletePost('${p.id}')"><i class="fa-solid fa-trash"></i></button>`:'';
+    const commentsHtml=comments.map(c=>`<div class="comment-item"><img src="${c.author_avatar||'/img/loge.png'}"><div><div class="comment-author">${esc(c.author_name)}</div><div class="comment-text">${esc(c.content)}</div><div class="comment-time">${getTimeAgo(c.created_at)}</div></div></div>`).join('');
+    document.getElementById('detailContent').innerHTML=`<div class="detail-author"><img src="${p.author_avatar||'/img/loge.png'}"><div><div style="font-weight:600">${esc(p.author_name)}</div><div style="font-size:13px;color:#aaa">${getTimeAgo(p.created_at)}</div></div></div><div class="detail-title">${esc(p.title)}</div>${tagsHtml}<div class="detail-content">${esc(p.content)}</div><div class="detail-actions"><button class="post-action ${p.isLiked?'liked':''}" onclick="likePost('${p.id}',this)"><i class="fa-${p.isLiked?'solid':'regular'} fa-heart"></i> ${p.likes}</button><button class="post-action"><i class="fa-regular fa-comment-dots"></i> ${p.comments_count}</button>${chatBtn}${delBtn}</div><h4 style="font-size:15px;font-weight:600;margin-bottom:12px">评论 (${comments.length})</h4><div>${commentsHtml||'<p style="color:#aaa;text-align:center;padding:20px">暂无评论</p>'}</div><div style="display:flex;gap:8px;margin-top:16px"><input class="form-input" id="detailCommentInput" placeholder="写下评论..." style="flex:1"><button class="btn-primary" onclick="submitComment('${p.id}')" style="padding:10px 20px;border-radius:10px;border:none;cursor:pointer">发送</button></div>`;
     showModal('detailModal');}catch(e){showToast('加载失败','error');}}
 
-    async function doPost(){const title=document.getElementById('postTitle').value.trim(),content=document.getElementById('postContent').value.trim(),tagsStr=document.getElementById('postTags').value.trim(),anon=document.getElementById('postAnon').checked,cat=document.getElementById('postCat').value;if(!title||!content)return showToast('请输入标题和内容','error');const tags=tagsStr?tagsStr.split(/[,，]/).map(t=>t.trim()).filter(Boolean):[];try{await fetchAPI('/api/posts','POST',{title,content,isAnonymous:anon,tags,category:cat});hideModal('postModal');showToast('发布成功 🌸');document.getElementById('postTitle').value='';document.getElementById('postContent').value='';document.getElementById('postTags').value='';loadPosts(true);}catch(e){showToast(e.message,'error');}}
+    async function doPost(e){e.preventDefault();const title=document.getElementById('postTitle').value,content=document.getElementById('postContent').value,tagsStr=document.getElementById('postTags').value,anon=document.getElementById('postAnon').checked,cat=document.getElementById('postCat').value;if(!title||!content)return showToast('请输入标题和内容','error');const tags=tagsStr?tagsStr.split(/[,，]/).map(t=>t.trim()).filter(Boolean):[];try{await fetchAPI('/api/posts','POST',{title,content,isAnonymous:anon,tags,category:cat});hideModal('postModal');showToast('发布成功 🌸');document.getElementById('postTitle').value='';document.getElementById('postContent').value='';document.getElementById('postTags').value='';loadPosts(true);}catch(e){showToast(e.message,'error');}}
 
-    async function likePost(id,btn){if(!currentUser)return showModal('loginModal');if(btn.classList.contains('processing'))return;btn.classList.add('processing');try{const d=await fetchAPI(`/api/posts/${id}/like`,'POST');btn.classList.toggle('liked',d.liked);btn.innerHTML=`<i class="fa-${d.liked?'solid':'regular'} fa-heart"></i> ${d.likes}`;if(d.liked)showToast('点赞成功 ❤️');}catch(e){showToast('操作失败','error');}finally{btn.classList.remove('processing');}}
+    async function likePost(id,btn){if(!currentUser)return showModal('loginModal');if(btn.classList.contains('processing'))return;btn.classList.add('processing');try{const d=await fetchAPI(`/api/posts/${id}/like`,'POST');btn.classList.toggle('liked',d.liked);btn.innerHTML=`<i class="fa-${d.liked?'solid':'regular'} fa-heart"></i> ${d.likes}`;}catch(e){}finally{btn.classList.remove('processing');}}
 
     async function submitComment(postId){const input=document.getElementById('detailCommentInput'),content=input.value.trim();if(!content)return;try{await fetchAPI(`/api/posts/${postId}/comments`,'POST',{content});input.value='';showToast('评论成功 ✨');openDetail(postId);}catch(e){showToast(e.message,'error');}}
 
@@ -301,83 +433,31 @@
 
     async function startChat(userId){if(!currentUser)return showModal('loginModal');try{const d=await fetchAPI('/api/chat/conversations','POST',{userId});location.href=`/chat?id=${d.conversation.id}`;}catch(e){showToast('无法发起私信','error');}}
 
-    async function checkUnread(){if(!token)return;try{const d=await fetchAPI('/api/chat/unread');const b=document.getElementById('unreadBadge');if(d.count>0){b.textContent=d.count>99?'99+':d.count;b.style.display='flex';}else b.style.display='none';}catch(e){}}
+    async function checkUnread(){if(!token)return;try{const d=await fetchAPI('/api/chat/unread');const b=document.getElementById('unreadBadge');if(d.count>0){b.textContent=d.count>99?'99+':d.count;b.style.display='inline';}else b.style.display='none';}catch(e){}}
 
-    // === Search ===
     function doSearch(){searchKeyword=document.getElementById('searchInput').value.trim();if(!searchKeyword)return;hideModal('searchModal');loadPosts(true);}
 
-    // === Pagination ===
-    function renderPagination(pag){const c=document.getElementById('pagination');if(pag.totalPages<=1){c.innerHTML='';return;}let h='';if(pag.page>1)h+=`<div class="syy" onclick="goPage(${pag.page-1})"><i class="fa-solid fa-chevron-left mr-1"></i>上页</div>`;h+=`<div class="fanye_sz">${pag.page} / ${pag.totalPages}</div>`;if(pag.page<pag.totalPages)h+=`<div class="xyy" onclick="goPage(${pag.page+1})">下页<i class="fa-solid fa-chevron-right ml-1"></i></div>`;c.innerHTML=h;}
-    function goPage(p){currentPage=p;loadPosts(true);window.scrollTo({top:0,behavior:'smooth'});}
+    // === Sidebar ===
+    async function loadSidebar(){try{const d=await fetchAPI('/api/posts?limit=1');document.getElementById('statPosts').textContent=d.pagination.total;}catch(e){}
+      try{const d=await fetchAPI('/api/announcements?limit=5');if(d.announcements?.length){const icons={info:'📢',urgent:'🚨',update:'✨'};document.getElementById('sidebarAnn').innerHTML=d.announcements.map(a=>`<div class="announcement-item"><span class="ann-badge ${a.type}">${icons[a.type]||'📢'}</span><span class="ann-title">${esc(a.title)}</span><div style="font-size:12px;color:#aaa;margin-top:2px">${esc(a.content).substring(0,60)}</div></div>`).join('');const marqueeText=d.announcements.map(a=>`${icons[a.type]||'📢'} ${a.title}: ${a.content}`).join('　　　');document.getElementById('annMarquee').textContent=marqueeText;}}catch(e){}}
 
     // === Tabs ===
-    document.querySelectorAll('.tab-btn[data-sort]').forEach(btn=>{btn.addEventListener('click',()=>{document.querySelectorAll('.tab-btn').forEach(b=>{b.classList.remove('bg-white','text-pink-500','shadow-sm');b.classList.add('hover:bg-white/50');});btn.classList.add('bg-white','text-pink-500','shadow-sm');btn.classList.remove('hover:bg-white/50');currentSort=btn.dataset.sort;searchKeyword='';loadPosts(true);});});
+    document.querySelectorAll('.feed-tab[data-sort]').forEach(btn=>{btn.addEventListener('click',()=>{document.querySelectorAll('.feed-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');currentSort=btn.dataset.sort;searchKeyword='';loadPosts(true);});});
 
-    // === Utility ===
+    // === Pagination ===
+    function renderPag(pag){const c=document.getElementById('pagination');if(pag.totalPages<=1){c.innerHTML='';return;}let h='';if(pag.page>1)h+=`<button onclick="goPage(${pag.page-1})" style="padding:8px 16px;border:1px solid #e8e0dc;border-radius:8px;background:#fff;cursor:pointer;font-size:14px">上页</button>`;for(let i=Math.max(1,pag.page-2);i<=Math.min(pag.totalPages,pag.page+2);i++)h+=`<button onclick="goPage(${i})" style="padding:8px 16px;border:1px solid ${i===pag.page?'#e74c6f':'#e8e0dc'};border-radius:8px;background:${i===pag.page?'#e74c6f':'#fff'};color:${i===pag.page?'#fff':'#333'};cursor:pointer;font-size:14px">${i}</button>`;if(pag.page<pag.totalPages)h+=`<button onclick="goPage(${pag.page+1})" style="padding:8px 16px;border:1px solid #e8e0dc;border-radius:8px;background:#fff;cursor:pointer;font-size:14px">下页</button>`;c.innerHTML=h;}
+    function goPage(p){currentPage=p;loadPosts(true);window.scrollTo({top:0,behavior:'smooth'});}
+
+    // === Util ===
+    function esc(s){if(!s)return '';const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
     function getTimeAgo(s){const d=new Date(s+(s.includes('Z')?'':'Z')),diff=Math.floor((Date.now()-d)/1000);if(diff<60)return'刚刚';if(diff<3600)return Math.floor(diff/60)+'分钟前';if(diff<86400)return Math.floor(diff/3600)+'小时前';if(diff<2592000)return Math.floor(diff/86400)+'天前';return Math.floor(diff/2592000)+'个月前';}
+    function siteTime(){const d=Math.floor((Date.now()-Date.UTC(2025,0,1))/86400000);document.getElementById('siteTime').textContent=`已运行 ${d} 天`;}
 
-    // === Click Heart Effect ===
-    document.body.onclick=function(e){if(e.target.closest('a,button,input,textarea,select,label,.tab-btn,.modal-overlay'))return;const h=document.createElement('span');h.innerText=['❤','🌸','✨','💕'][Math.floor(Math.random()*4)];h.style.cssText=`position:fixed;left:${e.clientX}px;top:${e.clientY}px;z-index:9999;pointer-events:none;transition:1s;font-size:1.2rem`;document.body.appendChild(h);setTimeout(()=>{h.style.top=(e.clientY-100)+'px';h.style.opacity=0;setTimeout(()=>h.remove(),1000);},10);}
-
-    // === Site Time ===
-    function siteTime(){const d=Math.floor((Date.now()-Date.UTC(2025,0,1))/86400000);document.getElementById('sitetime').textContent=`🌸 已甜蜜运行 ${d} 天`;}
+    // === Click Effect ===
+    document.body.onclick=function(e){if(e.target.closest('a,button,input,textarea,select,label,.modal-mask,.post-card'))return;const h=document.createElement('span');h.innerText=['❤','🌸','✨','💕'][Math.floor(Math.random()*4)];h.style.cssText=`position:fixed;left:${e.clientX}px;top:${e.clientY}px;z-index:999;pointer-events:none;transition:1s;font-size:1.2rem`;document.body.appendChild(h);setTimeout(()=>{h.style.top=(e.clientY-80)+'px';h.style.opacity=0;setTimeout(()=>h.remove(),1000);},10);}
 
     // === Init ===
-    window.onload=async()=>{await initAuth();loadSplash();loadPosts();loadAnnouncements();loadPopupAnn();siteTime();setInterval(checkUnread,30000);};
-
-    // === 开屏页面 ===
-    async function loadSplash(){
-      try{
-        const d=await fetchAPI('/api/admin/settings');
-        const s=d.settings;
-        if(s.splashEnabled==='true'){
-          document.getElementById('splashIcon').textContent=s.splashIcon||'🌸';
-          document.getElementById('splashTitle').textContent=s.splashTitle||'樱花表白墙';
-          document.getElementById('splashDesc').textContent=s.splashDesc||'勇敢说出你的故事';
-          if(s.splashBg)document.getElementById('splashScreen').style.background=s.splashBg;
-          document.getElementById('splashScreen').style.display='flex';
-        }
-      }catch(e){}
-    }
-    function closeSplash(){
-      document.getElementById('splashScreen').style.opacity='0';
-      document.getElementById('splashScreen').style.transition='opacity 0.5s';
-      setTimeout(()=>{document.getElementById('splashScreen').style.display='none';},500);
-    }
-
-    // === 弹窗公告 ===
-    async function loadPopupAnn(){
-      try{
-        const seen=localStorage.getItem('popupAnnSeen');
-        const d=await fetchAPI('/api/announcements/popup');
-        if(d.announcement&&(!seen||seen!==d.announcement.id)){
-          const a=d.announcement;
-          const icons={info:'📢',urgent:'🚨',update:'✨'};
-          document.getElementById('popupAnnIcon').textContent=icons[a.type]||'📢';
-          document.getElementById('popupAnnTitle').textContent=a.title;
-          document.getElementById('popupAnnContent').textContent=a.content;
-          document.getElementById('popupAnnouncement').style.display='flex';
-          setTimeout(()=>{document.getElementById('popupAnnBox').classList.add('scale-100');document.getElementById('popupAnnBox').classList.remove('scale-95');},10);
-          localStorage.setItem('popupAnnSeen',a.id);
-        }
-      }catch(e){}
-    }
-    function closePopupAnn(){
-      document.getElementById('popupAnnBox').classList.remove('scale-100');
-      document.getElementById('popupAnnBox').classList.add('scale-95');
-      setTimeout(()=>{document.getElementById('popupAnnouncement').style.display='none';},300);
-    }
-
-    // === 公告 ===
-    async function loadAnnouncements(){
-      try{
-        const d=await fetchAPI('/api/announcements?limit=5');
-        if(d.announcements&&d.announcements.length>0){
-          const texts=d.announcements.map(a=>`${a.type==='urgent'?'🚨':'📢'} ${a.title}: ${a.content}`);
-          document.getElementById('announcementMarquee').textContent=texts.join('　　　');
-        }
-      }catch(e){}
-    }
+    window.onload=async()=>{await initAuth();loadSplash();loadPosts();loadSidebar();loadPopupAnn();siteTime();setInterval(checkUnread,30000);};
   </script>
 </body>
 </html>
