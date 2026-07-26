@@ -1,7 +1,7 @@
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 const { getDb } = require('../database');
-const { authenticate, requireAdmin, requireSuperAdmin } = require('../middleware/auth');
+const { authenticate, requireSuperAdmin } = require('../middleware/auth');
 
 const r = express.Router();
 
@@ -11,11 +11,24 @@ r.get('/', (req, res) => {
     const db = getDb();
     const limit = Math.min(parseInt(req.query.limit) || 10, 50);
     const announcements = db.prepare(
-      "SELECT id, title, content, type, is_pinned, created_at FROM announcements WHERE status = 'published' ORDER BY is_pinned DESC, created_at DESC LIMIT ?"
+      "SELECT id, title, content, type, is_pinned, show_popup, created_at FROM announcements WHERE status = 'published' ORDER BY is_pinned DESC, created_at DESC LIMIT ?"
     ).all(limit);
     res.json({ announcements });
   } catch (e) {
     res.status(500).json({ error: '获取公告失败' });
+  }
+});
+
+// 获取需要弹窗的公告
+r.get('/popup', (req, res) => {
+  try {
+    const db = getDb();
+    const ann = db.prepare(
+      "SELECT id, title, content, type FROM announcements WHERE status = 'published' AND show_popup = 1 ORDER BY is_pinned DESC, created_at DESC LIMIT 1"
+    ).get();
+    res.json({ announcement: ann || null });
+  } catch (e) {
+    res.status(500).json({ error: '获取失败' });
   }
 });
 
@@ -24,7 +37,7 @@ r.get('/:id', (req, res) => {
   try {
     const db = getDb();
     const ann = db.prepare(
-      "SELECT id, title, content, type, is_pinned, created_at FROM announcements WHERE id = ? AND status = 'published'"
+      "SELECT id, title, content, type, is_pinned, show_popup, created_at FROM announcements WHERE id = ? AND status = 'published'"
     ).get(req.params.id);
     if (!ann) return res.status(404).json({ error: '公告不存在' });
     res.json({ announcement: ann });
@@ -57,19 +70,19 @@ r.get('/admin/all', (req, res) => {
 r.post('/', (req, res) => {
   try {
     const db = getDb();
-    const { title, content, type = 'info', is_pinned = 0 } = req.body;
+    const { title, content, type = 'info', is_pinned = 0, show_popup = 0 } = req.body;
     if (!title || !content) return res.status(400).json({ error: '请输入标题和内容' });
     if (title.length > 100) return res.status(400).json({ error: '标题最长100字' });
     if (content.length > 2000) return res.status(400).json({ error: '内容最长2000字' });
 
     const id = uuidv4();
     db.prepare(
-      "INSERT INTO announcements (id, title, content, type, is_pinned, status) VALUES (?, ?, ?, ?, ?, 'published')"
-    ).run(id, title, content, type, is_pinned ? 1 : 0);
+      "INSERT INTO announcements (id, title, content, type, is_pinned, show_popup, status) VALUES (?, ?, ?, ?, ?, ?, 'published')"
+    ).run(id, title, content, type, is_pinned ? 1 : 0, show_popup ? 1 : 0);
 
     res.json({
       message: '公告发布成功',
-      announcement: { id, title, content, type, is_pinned: is_pinned ? 1 : 0 }
+      announcement: { id, title, content, type, is_pinned: is_pinned ? 1 : 0, show_popup: show_popup ? 1 : 0 }
     });
   } catch (e) {
     res.status(500).json({ error: '发布失败' });
@@ -80,7 +93,7 @@ r.post('/', (req, res) => {
 r.put('/:id', (req, res) => {
   try {
     const db = getDb();
-    const { title, content, type, is_pinned, status } = req.body;
+    const { title, content, type, is_pinned, show_popup, status } = req.body;
     const ann = db.prepare("SELECT id FROM announcements WHERE id = ?").get(req.params.id);
     if (!ann) return res.status(404).json({ error: '公告不存在' });
 
@@ -90,6 +103,7 @@ r.put('/:id', (req, res) => {
     if (content !== undefined) { updates.push('content = ?'); values.push(content); }
     if (type !== undefined) { updates.push('type = ?'); values.push(type); }
     if (is_pinned !== undefined) { updates.push('is_pinned = ?'); values.push(is_pinned ? 1 : 0); }
+    if (show_popup !== undefined) { updates.push('show_popup = ?'); values.push(show_popup ? 1 : 0); }
     if (status !== undefined) { updates.push('status = ?'); values.push(status); }
 
     if (updates.length === 0) return res.status(400).json({ error: '无更新内容' });

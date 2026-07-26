@@ -58,6 +58,35 @@
   <div id="sakura-container" class="sakura-bg"></div>
   <div id="toast-container"></div>
 
+  <!-- 开屏页面 -->
+  <div id="splashScreen" class="fixed inset-0 z-[100] flex items-center justify-center" style="background:linear-gradient(135deg,#ffdee9,#b5fffc);display:none">
+    <div class="text-center">
+      <div id="splashIcon" class="text-7xl mb-4">🌸</div>
+      <h1 id="splashTitle" class="font-bold text-3xl text-pink-600 mb-2">樱花表白墙</h1>
+      <p id="splashDesc" class="text-pink-400 mb-8">勇敢说出你的故事</p>
+      <button onclick="closeSplash()" class="bg-white text-pink-500 px-8 py-3 rounded-full font-bold shadow-lg hover:shadow-xl transition transform hover:scale-105">
+        <i class="fa-solid fa-heart mr-2"></i>进入表白墙
+      </button>
+    </div>
+  </div>
+
+  <!-- 弹窗公告 -->
+  <div id="popupAnnouncement" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[90] flex items-center justify-center p-4" style="display:none" onclick="closePopupAnn()">
+    <div class="glass rounded-3xl p-8 w-full max-w-md shadow-2xl transform scale-95 transition-all duration-300" onclick="event.stopPropagation()" id="popupAnnBox">
+      <div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-r from-pink-200 to-rose-200 rounded-t-3xl"></div>
+      <div class="relative">
+        <div class="text-center mb-4">
+          <span id="popupAnnIcon" class="text-4xl">📢</span>
+        </div>
+        <h3 id="popupAnnTitle" class="font-bold text-xl text-gray-800 text-center mb-3"></h3>
+        <div id="popupAnnContent" class="text-gray-600 text-sm leading-relaxed text-center mb-6 bg-gray-50 p-4 rounded-2xl"></div>
+        <button onclick="closePopupAnn()" class="w-full bg-gradient-to-r from-pink-500 to-rose-500 text-white py-3 rounded-xl font-bold shadow-lg active:scale-95 transition">
+          我知道了
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- 顶部导航 -->
   <nav class="fixed top-0 left-0 w-full z-40 glass px-4 py-3 flex justify-between items-center shadow-sm">
     <div class="flex items-center space-x-2 cursor-pointer" onclick="showModal('profileModal')">
@@ -294,7 +323,50 @@
     function siteTime(){const d=Math.floor((Date.now()-Date.UTC(2025,0,1))/86400000);document.getElementById('sitetime').textContent=`🌸 已甜蜜运行 ${d} 天`;}
 
     // === Init ===
-    window.onload=async()=>{await initAuth();loadPosts();loadAnnouncements();siteTime();setInterval(checkUnread,30000);};
+    window.onload=async()=>{await initAuth();loadSplash();loadPosts();loadAnnouncements();loadPopupAnn();siteTime();setInterval(checkUnread,30000);};
+
+    // === 开屏页面 ===
+    async function loadSplash(){
+      try{
+        const d=await fetchAPI('/api/admin/settings');
+        const s=d.settings;
+        if(s.splashEnabled==='true'){
+          document.getElementById('splashIcon').textContent=s.splashIcon||'🌸';
+          document.getElementById('splashTitle').textContent=s.splashTitle||'樱花表白墙';
+          document.getElementById('splashDesc').textContent=s.splashDesc||'勇敢说出你的故事';
+          if(s.splashBg)document.getElementById('splashScreen').style.background=s.splashBg;
+          document.getElementById('splashScreen').style.display='flex';
+        }
+      }catch(e){}
+    }
+    function closeSplash(){
+      document.getElementById('splashScreen').style.opacity='0';
+      document.getElementById('splashScreen').style.transition='opacity 0.5s';
+      setTimeout(()=>{document.getElementById('splashScreen').style.display='none';},500);
+    }
+
+    // === 弹窗公告 ===
+    async function loadPopupAnn(){
+      try{
+        const seen=localStorage.getItem('popupAnnSeen');
+        const d=await fetchAPI('/api/announcements/popup');
+        if(d.announcement&&(!seen||seen!==d.announcement.id)){
+          const a=d.announcement;
+          const icons={info:'📢',urgent:'🚨',update:'✨'};
+          document.getElementById('popupAnnIcon').textContent=icons[a.type]||'📢';
+          document.getElementById('popupAnnTitle').textContent=a.title;
+          document.getElementById('popupAnnContent').textContent=a.content;
+          document.getElementById('popupAnnouncement').style.display='flex';
+          setTimeout(()=>{document.getElementById('popupAnnBox').classList.add('scale-100');document.getElementById('popupAnnBox').classList.remove('scale-95');},10);
+          localStorage.setItem('popupAnnSeen',a.id);
+        }
+      }catch(e){}
+    }
+    function closePopupAnn(){
+      document.getElementById('popupAnnBox').classList.remove('scale-100');
+      document.getElementById('popupAnnBox').classList.add('scale-95');
+      setTimeout(()=>{document.getElementById('popupAnnouncement').style.display='none';},300);
+    }
 
     // === 公告 ===
     async function loadAnnouncements(){
