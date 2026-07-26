@@ -60,6 +60,13 @@ async function initDatabase() {
     CREATE TABLE IF NOT EXISTS reports (id TEXT PRIMARY KEY,reporter_id TEXT NOT NULL,target_id TEXT NOT NULL,target_type TEXT NOT NULL,reason TEXT NOT NULL,status TEXT DEFAULT 'pending',created_at TEXT DEFAULT (datetime('now')),resolved_at TEXT);
     CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY,value TEXT NOT NULL,updated_at TEXT DEFAULT (datetime('now')));
     CREATE TABLE IF NOT EXISTS announcements (id TEXT PRIMARY KEY,title TEXT NOT NULL,content TEXT NOT NULL,type TEXT DEFAULT 'info',is_pinned INTEGER DEFAULT 0,show_popup INTEGER DEFAULT 0,status TEXT DEFAULT 'published',created_at TEXT DEFAULT (datetime('now')),updated_at TEXT DEFAULT (datetime('now')));
+    CREATE TABLE IF NOT EXISTS bookmarks (id TEXT PRIMARY KEY,user_id TEXT NOT NULL,post_id TEXT NOT NULL,created_at TEXT DEFAULT (datetime('now')),UNIQUE(user_id,post_id));
+    CREATE TABLE IF NOT EXISTS notifications (id TEXT PRIMARY KEY,user_id TEXT NOT NULL,type TEXT NOT NULL,content TEXT,from_user_id TEXT,post_id TEXT,is_read INTEGER DEFAULT 0,created_at TEXT DEFAULT (datetime('now')));
+    CREATE TABLE IF NOT EXISTS reactions (id TEXT PRIMARY KEY,user_id TEXT NOT NULL,target_id TEXT NOT NULL,target_type TEXT NOT NULL,emoji TEXT NOT NULL,created_at TEXT DEFAULT (datetime('now')),UNIQUE(user_id,target_id,target_type,emoji));
+    CREATE TABLE IF NOT EXISTS banned_ips (id TEXT PRIMARY KEY,ip TEXT NOT NULL UNIQUE,reason TEXT,banned_by TEXT,created_at TEXT DEFAULT (datetime('now')));
+    CREATE TABLE IF NOT EXISTS visit_stats (id INTEGER PRIMARY KEY AUTOINCREMENT,date TEXT NOT NULL UNIQUE,page_views INTEGER DEFAULT 0,unique_visitors INTEGER DEFAULT 0,posts_created INTEGER DEFAULT 0,comments_created INTEGER DEFAULT 0);
+    CREATE TABLE IF NOT EXISTS drafts (id TEXT PRIMARY KEY,user_id TEXT NOT NULL,title TEXT,content TEXT,tags TEXT,category TEXT DEFAULT 'confession',is_anonymous INTEGER DEFAULT 0,created_at TEXT DEFAULT (datetime('now')),updated_at TEXT DEFAULT (datetime('now')));
+    CREATE TABLE IF NOT EXISTS sensitive_words (id TEXT PRIMARY KEY,word TEXT NOT NULL UNIQUE,replacement TEXT DEFAULT '***',created_at TEXT DEFAULT (datetime('now')));
   `);
 
   const adminExists = db.prepare("SELECT id FROM users WHERE role = 'super_admin'").get();
@@ -68,7 +75,7 @@ async function initDatabase() {
     console.log('默认管理员: admin / admin123');
   }
 
-  const defaults = {siteName:'樱花表白墙',siteDescription:'勇敢说出你的故事',maintenanceMode:'false',maintenanceTitle:'网站维护中',maintenanceMessage:'我们正在进行系统升级，预计很快恢复。',maintenanceBgColor:'#ffdee9',maintenanceIcon:'🌸',maintenanceCountdown:'',maintenanceContact:'',maintenanceCustomCss:'',maintenanceCustomHtml:'',allowRegister:'true',allowAnonymous:'true',postReview:'false',maxImagesPerPost:'9',splashEnabled:'false',splashIcon:'🌸',splashTitle:'樱花表白墙',splashDesc:'勇敢说出你的故事',splashBg:'linear-gradient(135deg,#ffdee9,#b5fffc)',siteLogo:'/img/loge.png'};
+  const defaults = {siteName:'樱花表白墙',siteDescription:'勇敢说出你的故事',maintenanceMode:'false',maintenanceTitle:'网站维护中',maintenanceMessage:'我们正在进行系统升级，预计很快恢复。',maintenanceBgColor:'#ffdee9',maintenanceIcon:'🌸',maintenanceCountdown:'',maintenanceContact:'',maintenanceCustomCss:'',maintenanceCustomHtml:'',allowRegister:'true',allowAnonymous:'true',postReview:'false',maxImagesPerPost:'9',splashEnabled:'false',splashIcon:'🌸',splashTitle:'樱花表白墙',splashDesc:'勇敢说出你的故事',splashBg:'linear-gradient(135deg,#ffdee9,#b5fffc)',siteLogo:'/img/loge.png',enableReactions:'true',enableBookmarks:'true',enableNotifications:'true',sensitiveWords:'色情,赌博,毒品,暴力,诈骗',replaceSensitiveWords:'true'};
   for (const [k,v] of Object.entries(defaults)) {
     if (!db.prepare("SELECT key FROM settings WHERE key=?").get(k)) db.prepare("INSERT INTO settings (key,value) VALUES (?,?)").run(k,v);
   }

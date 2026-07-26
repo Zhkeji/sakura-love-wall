@@ -345,6 +345,17 @@
     /* Animations */
     @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
     .fade-up{animation:fadeUp 0.4s ease-out}
+    /* === Dark Mode === */
+    .dark-mode{background:#1a1a2e;color:#e0e0e0}
+    .dark-mode .site-header{background:rgba(26,26,46,0.95);border-bottom-color:#2a2a4a}
+    .dark-mode .post-card,.dark-mode .sidebar-card,.dark-mode .profile-card{background:#16213e;border-color:#2a2a4a}
+    .dark-mode .post-title{color:#e0e0e0}
+    .dark-mode .post-content,.dark-mode .comment-text{color:#a0a0b0}
+    .dark-mode .form-input,.dark-mode .feed-tabs{background:#16213e;border-color:#2a2a4a;color:#e0e0e0}
+    .dark-mode .modal-box{background:#16213e;color:#e0e0e0}
+    .dark-mode .detail-title{color:#e0e0e0}
+    .dark-mode .stat-num{color:#ff6b8a}
+    .dark-mode .toast-item{background:#16213e;border-color:#2a2a4a;color:#e0e0e0}
   </style>
 </head>
 <body>
@@ -437,7 +448,9 @@
       <div class="header-inner">
         <a href="/" class="logo"><img id="headerLogo" src="/img/loge.png" alt=""> <span id="headerSiteName">樱花表白墙</span></a>
         <div class="header-nav">
-          <a href="/chat"><i class="fa-solid fa-envelope"></i> 私信 <span id="unreadBadge" style="display:none;background:#e74c3c;color:#fff;font-size:11px;padding:1px 6px;border-radius:10px;margin-left:4px"></span></a>
+          <button onclick="toggleDarkMode()" id="darkModeBtn" style="background:none;border:none;cursor:pointer;font-size:18px;padding:8px" title="夜间模式">🌙</button>
+        <button onclick="showNotifications()" style="background:none;border:none;cursor:pointer;font-size:18px;padding:8px;position:relative" title="通知">🔔<span id="notifBadge" style="display:none;position:absolute;top:2px;right:2px;background:#e74c3c;color:#fff;font-size:10px;padding:1px 5px;border-radius:8px">0</span></button>
+        <a href="/chat"><i class="fa-solid fa-envelope"></i> 私信 <span id="unreadBadge" style="display:none;background:#e74c3c;color:#fff;font-size:11px;padding:1px 6px;border-radius:10px;margin-left:4px"></span></a>
           <button onclick="showModal('postModal')" class="btn-primary"><i class="fa-solid fa-pen"></i> 写表白</button>
           <div style="position:relative;display:inline-block">
             <button onclick="toggleDropdown()" id="userBtn"><img id="navAvatar" src="/img/loge.png" style="width:32px;height:32px;border-radius:50%;vertical-align:middle"> <span id="navName"></span> <i class="fa-solid fa-chevron-down" style="font-size:11px;margin-left:4px"></i></button>
@@ -593,6 +606,45 @@
     </div>
   </div>
 
+  <!-- Notifications Modal -->
+  <div class="modal-mask" id="notifModal" onclick="hideModal('notifModal')">
+    <div class="modal-box" onclick="event.stopPropagation()" style="position:relative;max-height:80vh;overflow-y:auto">
+      <button class="modal-close" onclick="hideModal('notifModal')">&times;</button>
+      <h2 style="font-size:20px;font-weight:700;margin-bottom:16px">🔔 通知</h2>
+      <button onclick="markAllNotifRead()" style="background:none;border:1px solid #e8e0dc;padding:6px 12px;border-radius:8px;font-size:12px;cursor:pointer;margin-bottom:12px">全部标为已读</button>
+      <div id="notifList"><p style="color:#aaa;text-align:center;padding:20px">暂无通知</p></div>
+    </div>
+  </div>
+
+  <!-- Bookmarks Modal -->
+  <div class="modal-mask" id="bookmarkModal" onclick="hideModal('bookmarkModal')">
+    <div class="modal-box modal-box-lg" onclick="event.stopPropagation()" style="position:relative;max-height:80vh;overflow-y:auto">
+      <button class="modal-close" onclick="hideModal('bookmarkModal')">&times;</button>
+      <h2 style="font-size:20px;font-weight:700;margin-bottom:16px">🔖 我的收藏</h2>
+      <div id="bookmarkList"><p style="color:#aaa;text-align:center;padding:20px">暂无收藏</p></div>
+    </div>
+  </div>
+
+  <!-- Share Modal -->
+  <div class="modal-mask" id="shareModal" onclick="hideModal('shareModal')">
+    <div class="modal-box" onclick="event.stopPropagation()" style="position:relative;text-align:center">
+      <button class="modal-close" onclick="hideModal('shareModal')">&times;</button>
+      <h2 style="font-size:20px;font-weight:700;margin-bottom:16px">📤 分享</h2>
+      <div id="shareContent"></div>
+      <div style="display:flex;gap:12px;justify-content:center;margin-top:16px">
+        <button onclick="copyShareLink()" style="padding:10px 20px;background:#e74c6f;color:#fff;border:none;border-radius:10px;cursor:pointer"><i class="fa-solid fa-copy"></i> 复制链接</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Profile Modal -->
+  <div class="modal-mask" id="userProfileModal" onclick="hideModal('userProfileModal')">
+    <div class="modal-box" onclick="event.stopPropagation()" style="position:relative;max-height:80vh;overflow-y:auto">
+      <button class="modal-close" onclick="hideModal('userProfileModal')">&times;</button>
+      <div id="userProfileContent"></div>
+    </div>
+  </div>
+
   <!-- Detail Modal -->
   <div class="modal-mask" id="detailModal" onclick="hideModal('detailModal')">
     <div class="modal-box modal-box-lg" onclick="event.stopPropagation()" style="position:relative;max-height:85vh;overflow-y:auto">
@@ -729,7 +781,7 @@
 
     function createPostCard(p){const d=document.createElement('div');d.className='post-card fade-up';const catIcons={confession:'💕',daily:'☕',expand:'🤝'};const catNames={confession:'表白',daily:'日常',expand:'扩列'};const catHtml=p.category?`<span class="post-category">${catIcons[p.category]||'💕'} ${catNames[p.category]||'表白'}</span>`:'';const tagsHtml=p.tags?.length?`<div class="post-tags">${p.tags.map(t=>`<span class="post-tag">#${t}</span>`).join('')}</div>`:'';const msgBtn=p.author_id&&p.author_id!==currentUser?.id?`<button class="post-action" onclick="event.stopPropagation();startChat('${p.author_id}')"><i class="fa-regular fa-envelope"></i> 私信</button>`:'';
     const isLong=p.content.length>150;const shortContent=isLong?p.content.substring(0,150)+'...':p.content;const fullContent=p.content;
-    d.innerHTML=`<div class="post-header"><img src="${p.author_avatar||'/img/loge.png'}" class="post-avatar"><div class="post-meta"><div class="post-author">${esc(p.author_name)}</div><div class="post-time">${getTimeAgo(p.created_at)}</div></div>${catHtml}</div><div class="post-title">${esc(p.title)}</div><div class="post-content" id="content-${p.id}">${esc(shortContent)}${isLong?`<a href="javascript:void(0)" onclick="event.stopPropagation();expandContent('${p.id}','${encodeURIComponent(fullContent)}')" style="color:#e74c6f;font-size:13px;font-weight:500;margin-left:4px">展开全文</a>`:''}</div>${tagsHtml}<div class="post-footer"><button class="post-action ${p.isLiked?'liked':''}" onclick="event.stopPropagation();likePost('${p.id}',this)"><i class="fa-${p.isLiked?'solid':'regular'} fa-heart"></i> ${p.likes}</button><button class="post-action" onclick="event.stopPropagation();openDetail('${p.id}')"><i class="fa-regular fa-comment-dots"></i> ${p.comments_count}</button><button class="post-action" style="cursor:default"><i class="fa-regular fa-eye"></i> ${p.views||0}</button>${msgBtn}</div>`;
+    d.innerHTML=`<div class="post-header"><img src="${p.author_avatar||'/img/loge.png'}" class="post-avatar"><div class="post-meta"><div class="post-author">${esc(p.author_name)}</div><div class="post-time">${getTimeAgo(p.created_at)}</div></div>${catHtml}</div><div class="post-title">${esc(p.title)}</div><div class="post-content" id="content-${p.id}">${esc(shortContent)}${isLong?`<a href="javascript:void(0)" onclick="event.stopPropagation();expandContent('${p.id}','${encodeURIComponent(fullContent)}')" style="color:#e74c6f;font-size:13px;font-weight:500;margin-left:4px">展开全文</a>`:''}</div>${tagsHtml}<div class="post-footer"><button class="post-action ${p.isLiked?'liked':''}" onclick="event.stopPropagation();likePost('${p.id}',this)"><i class="fa-${p.isLiked?'solid':'regular'} fa-heart"></i> ${p.likes}</button><button class="post-action" onclick="event.stopPropagation();openDetail('${p.id}')"><i class="fa-regular fa-comment-dots"></i> ${p.comments_count}</button><button class="post-action" style="cursor:default"><i class="fa-regular fa-eye"></i> ${p.views||0}</button><button class="post-action ${p.isBookmarked?'liked':''}" onclick="event.stopPropagation();toggleBookmark('${p.id}',this)"><i class="fa-${p.isBookmarked?'solid':'regular'} fa-bookmark"></i></button><button class="post-action" onclick="event.stopPropagation();showShare('${p.id}','${esc(p.title)}')"><i class="fa-solid fa-share-nodes"></i></button>${msgBtn}</div>`;
     d.onclick=()=>openDetail(p.id);return d;}
     function expandContent(id,content){const el=document.getElementById('content-'+id);if(el)el.innerHTML=decodeURIComponent(content)+` <a href="javascript:void(0)" onclick="event.stopPropagation();collapseContent('${id}','${content}')" style="color:#e74c6f;font-size:13px;font-weight:500;margin-left:4px">收起</a>`;}
     function collapseContent(id,content){const el=document.getElementById('content-'+id);if(el){const full=decodeURIComponent(content);const short=full.substring(0,150)+'...';el.innerHTML=short+` <a href="javascript:void(0)" onclick="event.stopPropagation();expandContent('${id}','${content}')" style="color:#e74c6f;font-size:13px;font-weight:500;margin-left:4px">展开全文</a>`;}}
