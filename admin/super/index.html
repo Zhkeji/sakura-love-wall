@@ -110,6 +110,20 @@ textarea.form-input{min-height:80px;resize:vertical}
 input[type="color"]{width:60px;height:36px;border:1px solid #d1d1d6;border-radius:8px;cursor:pointer;padding:2px}
 </style>
 </head><body>
+<!-- 登录页面 -->
+<div id="loginPage" style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#ff6b8a 0%,#e74c6f 50%,#6c5ce7 100%);padding:20px">
+  <div style="background:#fff;border-radius:20px;padding:40px;max-width:380px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.2);text-align:center">
+    <div style="font-size:48px;margin-bottom:12px">👑</div>
+    <h1 style="font-size:24px;margin-bottom:8px">超级管理员</h1>
+    <p style="font-size:14px;color:#8e8e93;margin-bottom:28px">樱花表白墙</p>
+    <div style="margin-bottom:16px"><input id="adminUser" type="text" style="width:100%;padding:12px 16px;border:1px solid #e5e5ea;border-radius:12px;font-size:14px;outline:none" placeholder="超管账号"></div>
+    <div style="margin-bottom:16px"><input id="adminPass" type="password" style="width:100%;padding:12px 16px;border:1px solid #e5e5ea;border-radius:12px;font-size:14px;outline:none" placeholder="密码"></div>
+    <button onclick="adminLogin()" style="width:100%;padding:14px;background:linear-gradient(135deg,#e74c6f,#6c5ce7);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer">登录</button>
+    <p style="margin-top:16px;font-size:13px;color:#8e8e93">普通管理员请前往 <a href="/admin/admin/" style="color:#e74c6f">管理员后台</a></p>
+  </div>
+</div>
+<!-- 管理后台 -->
+<div id="adminApp" style="display:none">
 <!-- Sidebar -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-logo"><img id="sidebarLogo" src="/img/loge.png"><span>超管后台</span></div>
@@ -315,6 +329,7 @@ document.querySelectorAll('.nav-item[data-page]').forEach(n=>{n.addEventListener
 // Auth
 async function checkAuth(){try{const d=await fetchAPI('/api/auth/me');if(d.user.role!=='super_admin'){localStorage.removeItem('admin_token');token=null;showT('仅限超级管理员','error');return;}adminUser=d.user;showDashboard();}catch(e){localStorage.removeItem('admin_token');token=null;showT('登录已过期','error');}}
 function showDashboard(){document.getElementById('loginPage').style.display='none';document.getElementById('adminApp').style.display='block';document.getElementById('adminName').textContent=adminUser.nickname;loadPage('dashboard');}
+function adminLogin(){var u=document.getElementById("adminUser").value,p=document.getElementById("adminPass").value;if(!u||!p)return showT("请输入账号密码","error");fetchAPI("/api/auth/login","POST",{username:u,password:p}).then(function(d){if(d.user.role!=="super_admin")return showT("仅限超级管理员","error");token=d.token;localStorage.setItem("admin_token",token);adminUser=d.user;showDashboard();showT("登录成功 👑");}).catch(function(e){showT(e.message,"error");});}
 function adminLogout(){token=null;adminUser=null;localStorage.removeItem('admin_token');location.reload();}
 function loadPage(p){const fn={dashboard:loadDashboard,posts:loadPosts,users:loadUsers,comments:loadComments,reports:loadReports,announcements:loadAnnouncements,admins:loadAdmins,chats:loadChats,settings:loadSettings,splash:loadSplash,maintenance:loadMaint};if(fn[p])fn[p]();}
 
@@ -381,4 +396,5 @@ function roleText(r){return{user:'用户',admin:'管理员',super_admin:'超管'
 function showT(m,t='success'){const c=document.getElementById('toastArea'),d=document.createElement('div');d.className='toast-item';d.innerHTML=`<i class="fa-solid fa-circle-${t==='success'?'check':'exclamation'}" style="color:${t==='success'?'#34c759':'#ff3b5c'}"></i> ${m}`;c.appendChild(d);setTimeout(()=>{d.style.opacity='0';setTimeout(()=>d.remove(),300);},3000);}
 function debounce(fn,d){let t;return function(...a){clearTimeout(t);t=setTimeout(()=>fn.apply(this,a),d);};}
 if(token)checkAuth();
-</script></body></html>
+</script></div>
+</body></html>
