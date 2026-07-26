@@ -49,10 +49,10 @@
 </div>
 <div id="toast" class="fixed top-20 left-1/2 -translate-x-1/2 z-[9999] pointer-events-none"></div>
 <script>
-const API='';let token=localS…ull;
+const API='';let token=localStorage.getItem('admin_token') || null;
 document.querySelectorAll('.nav-item[data-page]').forEach(n=>{n.addEventListener('click',()=>{document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));n.classList.add('active');document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('page-'+n.dataset.page).classList.add('active');loadPage(n.dataset.page);document.getElementById('sidebar').classList.remove('open');});});
 async function checkAuth(){try{const d=await fetchAPI('/api/auth/me');if(d.user.role!=='super_admin'){localStorage.removeItem('admin_token');token=***
-function adminLogin(){const u=document.getElementById('adminUser').value,p=document.getElementById('adminPass').value;if(!u||!p)return;fetchAPI('/api/auth/login','POST',{username:u,password:p}).then(d=>{if(d.user.role!=='super_admin')return showT('仅限超级管理员','error');token=d.toke…登录成功 👑');}).catch(e=>showT(e.message,'error'));}
+function adminLogin(){const u=document.getElementById('adminUser').value,p=document.getElementById('adminPass').value;if(!u||!p)return;fetchAPI('/api/auth/login','POST',{username:u,password:p}).then(d=>{if(d.user.role!=='super_admin')return showT('仅限超级管理员','error');token=d.token=d.token; localStorage.setItem('admin_token',token); adminUser=d.user; showT('登录成功 👑');}).catch(e=>showT(e.message,'error'));}
 function showDashboard(){document.getElementById('loginPage').style.display='none';document.getElementById('adminApp').style.display='block';document.getElementById('adminName').textContent=adminUser.nickname;loadPage('dashboard');}
 function adminLogout(){token=null;adminUser=null;localStorage.removeItem('admin_token');location.reload();}
 function loadPage(p){const fn={dashboard:loadDashboard,posts:loadPosts,users:loadUsers,comments:loadComments,reports:loadReports,settings:loadSettings,maintenance:loadMaint,admins:loadAdmins};if(fn[p])fn[p]();}
