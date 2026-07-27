@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>登录测试</title></head>
+<body style="padding:40px;font-family:sans-serif">
+<h2>登录测试</h2>
+<input id="u" placeholder="用户名" value="admin"><br><br>
+<input id="p" type="password" placeholder="密码" value="admin123"><br><br>
+<button onclick="doLogin()">登录</button>
+<div id="result" style="margin-top:20px;padding:10px;background:#f0f0f0"></div>
+
+<script>
+function doLogin() {
+  var result = document.getElementById('result');
+  result.innerHTML = '正在登录...';
+  
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/api/auth/login', true);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.onreadystatechange = function() {
+    result.innerHTML += '<br>readyState: ' + xhr.readyState;
+    if (xhr.readyState === 4) {
+      result.innerHTML += '<br>status: ' + xhr.status;
+      result.innerHTML += '<br>response: ' + xhr.responseText;
+      try {
+        var d = JSON.parse(xhr.responseText);
+        if (d.token) {
+          result.innerHTML += '<br><b style="color:green">登录成功！Token: ' + d.token.substring(0,20) + '...</b>';
+        } else {
+          result.innerHTML += '<br><b style="color:red">失败: ' + (d.error || '未知错误') + '</b>';
+        }
+      } catch(e) {
+        result.innerHTML += '<br><b style="color:red">解析错误: ' + e.message + '</b>';
+      }
+    }
+  };
+  xhr.onerror = function() {
+    result.innerHTML += '<br><b style="color:red">网络错误</b>';
+  };
+  xhr.send(JSON.stringify({username: document.getElementById('u').value, password: document.getElementById('p').value}));
+}
+</script>
+</body>
+</html>

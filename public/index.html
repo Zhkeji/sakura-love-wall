@@ -331,7 +331,7 @@ textarea.fi{min-height:90px;resize:vertical;font-family:inherit}
     var r = new XMLHttpRequest();
     r.open(method, API + url, true);
     r.setRequestHeader('Content-Type', 'application/json');
-    if (token) r.setRequestHeader('Authorization', 'Bearer ' + token);
+    if (window._lw && window._lw.token) r.setRequestHeader('Authorization', 'Bearer ' + window._lw.token);
     r.onreadystatechange = function() {
       if (r.readyState !== 4) return;
       try {
@@ -734,21 +734,120 @@ textarea.fi{min-height:90px;resize:vertical;font-family:inherit}
   })();
 
   // === 初始化 ===
-  token = localStorage.getItem('token');
-  if (token) {
+  window._lw = { token: token, currentUser: currentUser, xhr: xhr, toast: toast, enterSite: enterSite, updateHeader: updateHeader, $: $ };
+
+  var savedToken = localStorage.getItem('token');
+  if (savedToken) {
+    window._lw.token = savedToken;
     xhr('GET', '/api/auth/me', null, function(err, d) {
       if (err || !d.user) {
         localStorage.removeItem('token');
-        token = null;
-        $('authPage').style.display = 'flex';
+        window._lw.token = null;
         return;
       }
-      currentUser = d.user;
+      window._lw.currentUser = d.user;
       enterSite();
     });
   }
 
 })();
+</script>
+
+<script>
+// === 全局登录注册函数（IIFE外部，确保可用） ===
+function doLogin() {
+  var u = document.getElementById('loginUser');
+  var p = document.getElementById('loginPass');
+  if (!u || !p) { alert('找不到输入框'); return; }
+  u = u.value.trim();
+  p = p.value;
+  if (!u || !p) { if(window._lw) window._lw.toast('请输入账号和密码'); else alert('请输入账号和密码'); return; }
+  
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/api/auth/login', true);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4) {
+      try {
+        var d = JSON.parse(xhr.responseText);
+        if (xhr.status === 200 && d.token) {
+          localStorage.setItem('token', d.token);
+          if (window._lw) {
+            window._lw.token = d.token;
+            window._lw.currentUser = d.user;
+            window._lw.enterSite();
+          } else {
+            location.reload();
+          }
+        } else {
+          if (window._lw) window._lw.toast(d.error || '登录失败');
+          else alert(d.error || '登录失败');
+        }
+      } catch(e) {
+        alert('登录出错: ' + e.message);
+      }
+    }
+  };
+  xhr.onerror = function() { alert('网络错误'); };
+  xhr.send(JSON.stringify({username: u, password: p}));
+}
+
+function doRegister() {
+  var u = document.getElementById('regUser');
+  var n = document.getElementById('regNick');
+  var e = document.getElementById('regEmail');
+  var p = document.getElementById('regPass');
+  var c = document.getElementById('regConfirm');
+  if (!u || !n || !p || !c) { alert('找不到输入框'); return; }
+  u = u.value.trim(); n = n.value.trim(); e = e ? e.value.trim() : '';
+  p = p.value; c = c.value;
+  if (!u || !n || !p) { if(window._lw) window._lw.toast('请填写完整'); else alert('请填写完整'); return; }
+  if (p.length < 6) { if(window._lw) window._lw.toast('密码至少6位'); else alert('密码至少6位'); return; }
+  if (p !== c) { if(window._lw) window._lw.toast('两次密码不一致'); else alert('两次密码不一致'); return; }
+  
+  var body = {username:u, password:p, nickname:n};
+  if (e) body.email = e;
+  
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/api/auth/register', true);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4) {
+      try {
+        var d = JSON.parse(xhr.responseText);
+        if (xhr.status === 200 && d.token) {
+          localStorage.setItem('token', d.token);
+          if (window._lw) {
+            window._lw.token = d.token;
+            window._lw.currentUser = d.user;
+            window._lw.toast('注册成功 🌸');
+            window._lw.enterSite();
+          } else {
+            alert('注册成功');
+            location.reload();
+          }
+        } else {
+          if (window._lw) window._lw.toast(d.error || '注册失败');
+          else alert(d.error || '注册失败');
+        }
+      } catch(e) {
+        alert('注册出错: ' + e.message);
+      }
+    }
+  };
+  xhr.onerror = function() { alert('网络错误'); };
+  xhr.send(JSON.stringify(body));
+}
+
+function showReg() {
+  document.getElementById('loginBox').style.display = 'none';
+  document.getElementById('registerBox').style.display = 'block';
+}
+
+function showLogin() {
+  document.getElementById('registerBox').style.display = 'none';
+  document.getElementById('loginBox').style.display = 'block';
+}
 </script>
 </body>
 </html>
