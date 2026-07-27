@@ -319,41 +319,62 @@ function showLogin() {
 }
 
 function doLogin() {
-  var u = $('loginUser').value.trim();
-  var p = $('loginPass').value;
-  if (!u || !p) { toast('请输入账号和密码'); return; }
-
-  api('POST', '/api/auth/login', { username: u, password: p }, function(err, d) {
-    if (err) { toast(err); return; }
-    TOKEN = d.token;
-    USER = d.user;
-    localStorage.setItem('token', TOKEN);
-    toast('登录成功 🌸', true);
-    enterSite();
-  });
+  var u = document.getElementById('loginUser').value.trim();
+  var p = document.getElementById('loginPass').value;
+  if (!u || !p) { alert('请输入账号和密码'); return; }
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/api/auth/login', true);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4) {
+      try {
+        var d = JSON.parse(xhr.responseText);
+        if (xhr.status === 200 && d.token) {
+          TOKEN = d.token;
+          USER = d.user;
+          localStorage.setItem('token', TOKEN);
+          enterSite();
+        } else {
+          alert('登录失败: ' + (d.error || '未知错误'));
+        }
+      } catch(e) { alert('错误: ' + e.message); }
+    }
+  };
+  xhr.onerror = function() { alert('网络错误'); };
+  xhr.send(JSON.stringify({ username: u, password: p }));
 }
 
 function doRegister() {
-  var u = $('regUser').value.trim();
-  var n = $('regNick').value.trim();
-  var e = $('regEmail').value.trim();
-  var p = $('regPass').value;
-  var c = $('regConfirm').value;
-  if (!u || !n || !p) { toast('请填写完整'); return; }
-  if (p.length < 6) { toast('密码至少6位'); return; }
-  if (p !== c) { toast('两次密码不一致'); return; }
-
+  var u = document.getElementById('regUser').value.trim();
+  var n = document.getElementById('regNick').value.trim();
+  var e = document.getElementById('regEmail').value.trim();
+  var p = document.getElementById('regPass').value;
+  var c = document.getElementById('regConfirm').value;
+  if (!u || !n || !p) { alert('请填写完整'); return; }
+  if (p.length < 6) { alert('密码至少6位'); return; }
+  if (p !== c) { alert('两次密码不一致'); return; }
   var body = { username: u, password: p, nickname: n };
   if (e) body.email = e;
-
-  api('POST', '/api/auth/register', body, function(err, d) {
-    if (err) { toast(err); return; }
-    TOKEN = d.token;
-    USER = d.user;
-    localStorage.setItem('token', TOKEN);
-    toast('注册成功 🌸', true);
-    enterSite();
-  });
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/api/auth/register', true);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4) {
+      try {
+        var d = JSON.parse(xhr.responseText);
+        if (xhr.status === 200 && d.token) {
+          TOKEN = d.token;
+          USER = d.user;
+          localStorage.setItem('token', TOKEN);
+          enterSite();
+        } else {
+          alert('注册失败: ' + (d.error || '未知错误'));
+        }
+      } catch(e) { alert('错误: ' + e.message); }
+    }
+  };
+  xhr.onerror = function() { alert('网络错误'); };
+  xhr.send(JSON.stringify(body));
 }
 
 function doLogout() {
