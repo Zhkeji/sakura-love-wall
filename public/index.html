@@ -832,7 +832,7 @@
         document.getElementById('sidebarBio').textContent=currentUser.bio||'这个人很懒，什么都没写';
       }
       // 公告
-      try{const d=await fetchAPI('/api/announcements?limit=5');if(d.announcements?.length){const icons={info:'📢',urgent:'🚨',update:'✨'};document.getElementById('sidebarAnn').innerHTML=d.announcements.map(a=>`<div class="announcement-item"><span class="ann-badge ${a.type}">${icons[a.type]||'📢'}</span><span class="ann-title">${esc(a.title)}</span><div style="font-size:12px;color:#aaa;margin-top:2px">${esc(a.content).substring(0,60)}</div></div>`).join('');const marqueeText=d.announcements.map(a=>`${icons[a.type]||'📢'} ${a.title}: ${a.content}`).join('　　　');document.getElementById('annMarquee').textContent=marqueeText;}}catch(e){}}
+      try{const d=await fetchAPI('/api/announcements?limit=5');if(d.announcements?.length){const icons={info:'📢',urgent:'🚨',update:'✨'};document.getElementById('sidebarAnn').innerHTML=d.announcements.map(a=>`<div class="announcement-item"><span class="ann-badge ${a.type}">${icons[a.type]||'📢'}</span><span class="ann-title">${esc(a.title)}</span><div style="font-size:12px;color:#aaa;margin-top:2px">${esc(a.content).substring(0,60)}</div></div>`).join('');const marqueeText=d.announcements.map(a=>`${icons[a.type]||'📢'} ${a.title}: ${a.content}`).join('　　　');document.getElementById('annMarquee').textContent=marqueeText;}}catch(e){}
     }
     function updateSidebar(){
       if(currentUser){
