@@ -37,4 +37,164 @@ r.delete('/sensitive-words/:id',requireAdmin,(req,res)=>{try{getDb().prepare('DE
 // === 访问统计 ===
 r.get('/visit-stats',requireAdmin,(req,res)=>{try{const db=getDb();const days=parseInt(req.query.days)||30;const stats=db.prepare('SELECT * FROM visit_stats ORDER BY date DESC LIMIT ?').all(days);const today=new Date().toISOString().split('T')[0];const todayStat=db.prepare('SELECT * FROM visit_stats WHERE date=?').get(today)||{page_views:0,unique_visitors:0,posts_created:0,comments_created:0};res.json({stats:stats.reverse(),today:todayStat});}catch(e){res.status(500).json({error:'失败'});}});
 
+
+// === 高级用户管理 ===
+
+// 重置用户密码（超管）
+r.put('/users/:id/reset-password', requireSuperAdmin, (req, res) => {
+  try {
+    const db = getDb();
+    const { newPassword } = req.body;
+    if (!newPassword || newPassword.length < 6) return res.status(400).json({ error: '密码至少6位' });
+    const bcrypt = require('bcryptjs');
+    db.prepare('UPDATE users SET password = ? WHERE id = ?').run(bcrypt.hashSync(newPassword, 10), req.params.id);
+    logAdmin(db, req.user.id, 'reset_password', req.params.id, '重置密码');
+    res.json({ message: '密码已重置' });
+  } catch (e) { res.status(500).json({ error: '重置失败' }); }
+});
+
+// 编辑用户资料（超管）
+r.put('/users/:id/profile', requireSuperAdmin, (req, res) => {
+  try {
+    const db = getDb();
+    const { nickname, bio, avatar } = req.body;
+    const fields = [], values = [];
+    if (nickname) { fields.push('nickname = ?'); values.push(nickname); }
+    if (bio !== undefined) { fields.push('bio = ?'); values.push(bio); }
+    if (avatar) { fields.push('avatar = ?'); values.push(avatar); }
+    if (!fields.length) return res.status(400).json({ error: '无更新内容' });
+    values.push(req.params.id);
+    db.prepare(`UPDATE users SET ${fields.join(', ')} WHERE id = ?`).run(...values);
+    logAdmin(db, req.user.id, 'edit_user', req.params.id, '编辑用户资料');
+    res.json({ message: '已更新' });
+  } catch (e) { res.status(500).json({ error: '更新失败' }); }
+});
+
+// 带理由封禁
+r.put('/users/:id/ban', requireAdmin, (req, res) => {
+  try {
+    const db = getDb();
+    const { reason, duration } = req.body; // duration: minutes, null = permanent
+    if (req.params.id === req.user.id) return res.status(400).json({ error: '不能封禁自己' });
+    const target = db.prepare('SELECT role FROM users WHERE id = ?').get(req.params.id);
+    if (target?.role === 'super_admin' && req.user.role !== 'super_admin') return res.status(403).json({ error: '无权操作' });
+
+    let banUntil = null;
+    if (duration) {
+      banUntil = new Date(Date.now() + duration * 60000).toISOString().replace('T', ' ').substring(0, 19);
+    }
+    db.prepare("UPDATE users SET status = 'banned', ban_reason = ?, ban_until = ? WHERE id = ?").run(reason || '', banUntil, req.params.id);
+    logAdmin(db, req.user.id, 'ban_user', req.params.id, `封禁: ${reason || '无理由'}, 时长: ${duration ? duration + '分钟' : '永久'}`);
+    res.json({ message: '已封禁', banUntil });
+  } catch (e) { res.status(500).json({ error: '封禁失败' }); }
+});
+
+// 解封
+r.put('/users/:id/unban', requireAdmin, (req, res) => {
+  try {
+    const db = getDb();
+    db.prepare("UPDATE users SET status = 'active', ban_reason = NULL, ban_until = NULL WHERE id = ?").run(req.params.id);
+    logAdmin(db, req.user.id, 'unban_user', req.params.id, '解封');
+    res.json({ message: '已解封' });
+  } catch (e) { res.status(500).json({ error: '解封失败' }); }
+});
+
+// 获取用户详情（含帖子统计）
+r.get('/users/:id/detail', requireAdmin, (req, res) => {
+  try {
+    const db = getDb();
+    const user = db.prepare('SELECT id, username, nickname, avatar, bio, role, status, ban_reason, ban_until, email, email_verified, created_at, last_login FROM users WHERE id = ?').get(req.params.id);
+    if (!user) return res.status(404).json({ error: '用户不存在' });
+    const postCount = db.prepare("SELECT COUNT(*) as c FROM posts WHERE user_id = ?").get(req.params.id).c;
+    const commentCount = db.prepare("SELECT COUNT(*) as c FROM comments WHERE user_id = ?").get(req.params.id).c;
+    const likeCount = db.prepare("SELECT COUNT(*) as c FROM likes WHERE user_id = ?").get(req.params.id).c;
+    res.json({ user, stats: { postCount, commentCount, likeCount } });
+  } catch (e) { res.status(500).json({ error: '获取失败' }); }
+});
+
+// 发送系统通知给用户
+r.post('/users/:id/notify', requireAdmin, (req, res) => {
+  try {
+    const db = getDb();
+    const { content } = req.body;
+    if (!content) return res.status(400).json({ error: '请输入通知内容' });
+    const { v4: uuidv4 } = require('uuid');
+    db.prepare("INSERT INTO notifications (id, user_id, type, content, from_user_id) VALUES (?, ?, 'system', ?, ?)").run(uuidv4(), req.params.id, content, req.user.id);
+    logAdmin(db, req.user.id, 'send_notify', req.params.id, content.substring(0, 100));
+    res.json({ message: '通知已发送' });
+  } catch (e) { res.status(500).json({ error: '发送失败' }); }
+});
+
+// 获取用户帖子列表
+r.get('/users/:id/posts', requireAdmin, (req, res) => {
+  try {
+    const db = getDb();
+    const page = parseInt(req.query.page) || 1;
+    const limit = Math.min(parseInt(req.query.limit) || 20, 50);
+    const offset = (page - 1) * limit;
+    const total = db.prepare("SELECT COUNT(*) as c FROM posts WHERE user_id = ? AND status != 'deleted'").get(req.params.id).c;
+    const posts = db.prepare("SELECT id, title, status, likes, comments_count, views, created_at FROM posts WHERE user_id = ? AND status != 'deleted' ORDER BY created_at DESC LIMIT ? OFFSET ?").all(req.params.id, limit, offset);
+    res.json({ posts, pagination: { page, limit, total, totalPages: Math.ceil(total / limit) } });
+  } catch (e) { res.status(500).json({ error: '获取失败' }); }
+});
+
+// === 管理员高级操作 ===
+
+// 设置管理员权限
+r.put('/admins/:id/permissions', requireSuperAdmin, (req, res) => {
+  try {
+    const db = getDb();
+    const { permissions } = req.body; // JSON string like '["posts","comments","reports"]'
+    db.prepare('UPDATE users SET admin_permissions = ? WHERE id = ? AND role = ?').run(JSON.stringify(permissions), req.params.id, 'admin');
+    logAdmin(db, req.user.id, 'set_permissions', req.params.id, JSON.stringify(permissions));
+    res.json({ message: '权限已更新' });
+  } catch (e) { res.status(500).json({ error: '更新失败' }); }
+});
+
+// 重置管理员密码
+r.put('/admins/:id/reset-password', requireSuperAdmin, (req, res) => {
+  try {
+    const db = getDb();
+    const { newPassword } = req.body;
+    if (!newPassword || newPassword.length < 6) return res.status(400).json({ error: '密码至少6位' });
+    const bcrypt = require('bcryptjs');
+    db.prepare('UPDATE users SET password = ? WHERE id = ?').run(bcrypt.hashSync(newPassword, 10), req.params.id);
+    logAdmin(db, req.user.id, 'reset_admin_pwd', req.params.id, '重置管理员密码');
+    res.json({ message: '密码已重置' });
+  } catch (e) { res.status(500).json({ error: '重置失败' }); }
+});
+
+// 获取管理员操作日志
+r.get('/admin-logs', requireSuperAdmin, (req, res) => {
+  try {
+    const db = getDb();
+    const page = parseInt(req.query.page) || 1;
+    const limit = Math.min(parseInt(req.query.limit) || 50, 100);
+    const offset = (page - 1) * limit;
+    const total = db.prepare('SELECT COUNT(*) as c FROM admin_logs').get().c;
+    const logs = db.prepare(`
+      SELECT l.*, u.nickname as admin_name
+      FROM admin_logs l LEFT JOIN users u ON l.admin_id = u.id
+      ORDER BY l.created_at DESC LIMIT ? OFFSET ?
+    `).all(limit, offset);
+    res.json({ logs, pagination: { page, limit, total, totalPages: Math.ceil(total / limit) } });
+  } catch (e) { res.status(500).json({ error: '获取失败' }); }
+});
+
+// 获取管理员列表（含权限）
+r.get('/admins', requireSuperAdmin, (req, res) => {
+  try {
+    const db = getDb();
+    const admins = db.prepare("SELECT id, username, nickname, avatar, admin_permissions, created_at, last_login FROM users WHERE role IN ('admin', 'super_admin') ORDER BY created_at DESC").all();
+    res.json({ admins });
+  } catch (e) { res.status(500).json({ error: '获取失败' }); }
+});
+
+// 记录管理员操作
+function logAdmin(db, adminId, action, targetId, details) {
+  try {
+    db.prepare('INSERT INTO admin_logs (id, admin_id, action, target_id, details) VALUES (?, ?, ?, ?, ?)').run(uuidv4(), adminId, action, targetId, details || '');
+  } catch (e) {}
+}
+
 module.exports=r;

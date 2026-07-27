@@ -51,7 +51,7 @@ async function initDatabase() {
   db = createDbWrapper(sqlDb);
 
   db.exec(`
-    CREATE TABLE IF NOT EXISTS users (id TEXT PRIMARY KEY,username TEXT UNIQUE NOT NULL,password TEXT NOT NULL,nickname TEXT NOT NULL,avatar TEXT DEFAULT '/img/loge.png',bio TEXT DEFAULT '',role TEXT DEFAULT 'user', email TEXT, email_verified INTEGER DEFAULT 1, verify_token TEXT,status TEXT DEFAULT 'active',created_at TEXT DEFAULT (datetime('now')),last_login TEXT);
+    CREATE TABLE IF NOT EXISTS users (id TEXT PRIMARY KEY,username TEXT UNIQUE NOT NULL,password TEXT NOT NULL,nickname TEXT NOT NULL,avatar TEXT DEFAULT '/img/loge.png',bio TEXT DEFAULT '',role TEXT DEFAULT 'user', email TEXT, email_verified INTEGER DEFAULT 1, verify_token TEXT, ban_reason TEXT, ban_until TEXT, admin_permissions TEXT DEFAULT 'all',status TEXT DEFAULT 'active',created_at TEXT DEFAULT (datetime('now')),last_login TEXT);
     CREATE TABLE IF NOT EXISTS posts (id TEXT PRIMARY KEY,user_id TEXT NOT NULL,title TEXT NOT NULL,content TEXT NOT NULL,images TEXT DEFAULT '[]',likes INTEGER DEFAULT 0,comments_count INTEGER DEFAULT 0,views INTEGER DEFAULT 0,status TEXT DEFAULT 'published',is_anonymous INTEGER DEFAULT 0,tags TEXT DEFAULT '[]',category TEXT DEFAULT 'confession', is_pinned INTEGER DEFAULT 0,created_at TEXT DEFAULT (datetime('now')),updated_at TEXT DEFAULT (datetime('now')));
     CREATE TABLE IF NOT EXISTS comments (id TEXT PRIMARY KEY,post_id TEXT NOT NULL,user_id TEXT NOT NULL,content TEXT NOT NULL,likes INTEGER DEFAULT 0,status TEXT DEFAULT 'published',created_at TEXT DEFAULT (datetime('now')));
     CREATE TABLE IF NOT EXISTS likes (id TEXT PRIMARY KEY,user_id TEXT NOT NULL,target_id TEXT NOT NULL,target_type TEXT NOT NULL,created_at TEXT DEFAULT (datetime('now')));
