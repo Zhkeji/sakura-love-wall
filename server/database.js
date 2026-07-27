@@ -52,7 +52,7 @@ async function initDatabase() {
 
   db.exec(`
     CREATE TABLE IF NOT EXISTS users (id TEXT PRIMARY KEY,username TEXT UNIQUE NOT NULL,password TEXT NOT NULL,nickname TEXT NOT NULL,avatar TEXT DEFAULT '/img/loge.png',bio TEXT DEFAULT '',role TEXT DEFAULT 'user', email TEXT, email_verified INTEGER DEFAULT 1, verify_token TEXT,status TEXT DEFAULT 'active',created_at TEXT DEFAULT (datetime('now')),last_login TEXT);
-    CREATE TABLE IF NOT EXISTS posts (id TEXT PRIMARY KEY,user_id TEXT NOT NULL,title TEXT NOT NULL,content TEXT NOT NULL,images TEXT DEFAULT '[]',likes INTEGER DEFAULT 0,comments_count INTEGER DEFAULT 0,views INTEGER DEFAULT 0,status TEXT DEFAULT 'published',is_anonymous INTEGER DEFAULT 0,tags TEXT DEFAULT '[]',category TEXT DEFAULT 'confession',created_at TEXT DEFAULT (datetime('now')),updated_at TEXT DEFAULT (datetime('now')));
+    CREATE TABLE IF NOT EXISTS posts (id TEXT PRIMARY KEY,user_id TEXT NOT NULL,title TEXT NOT NULL,content TEXT NOT NULL,images TEXT DEFAULT '[]',likes INTEGER DEFAULT 0,comments_count INTEGER DEFAULT 0,views INTEGER DEFAULT 0,status TEXT DEFAULT 'published',is_anonymous INTEGER DEFAULT 0,tags TEXT DEFAULT '[]',category TEXT DEFAULT 'confession', is_pinned INTEGER DEFAULT 0,created_at TEXT DEFAULT (datetime('now')),updated_at TEXT DEFAULT (datetime('now')));
     CREATE TABLE IF NOT EXISTS comments (id TEXT PRIMARY KEY,post_id TEXT NOT NULL,user_id TEXT NOT NULL,content TEXT NOT NULL,likes INTEGER DEFAULT 0,status TEXT DEFAULT 'published',created_at TEXT DEFAULT (datetime('now')));
     CREATE TABLE IF NOT EXISTS likes (id TEXT PRIMARY KEY,user_id TEXT NOT NULL,target_id TEXT NOT NULL,target_type TEXT NOT NULL,created_at TEXT DEFAULT (datetime('now')));
     CREATE TABLE IF NOT EXISTS messages (id TEXT PRIMARY KEY,sender_id TEXT NOT NULL,receiver_id TEXT NOT NULL,content TEXT NOT NULL,type TEXT DEFAULT 'text',is_read INTEGER DEFAULT 0,conversation_id TEXT,created_at TEXT DEFAULT (datetime('now')));
@@ -65,7 +65,7 @@ async function initDatabase() {
     CREATE TABLE IF NOT EXISTS reactions (id TEXT PRIMARY KEY,user_id TEXT NOT NULL,target_id TEXT NOT NULL,target_type TEXT NOT NULL,emoji TEXT NOT NULL,created_at TEXT DEFAULT (datetime('now')),UNIQUE(user_id,target_id,target_type,emoji));
     CREATE TABLE IF NOT EXISTS banned_ips (id TEXT PRIMARY KEY,ip TEXT NOT NULL UNIQUE,reason TEXT,banned_by TEXT,created_at TEXT DEFAULT (datetime('now')));
     CREATE TABLE IF NOT EXISTS visit_stats (id INTEGER PRIMARY KEY AUTOINCREMENT,date TEXT NOT NULL UNIQUE,page_views INTEGER DEFAULT 0,unique_visitors INTEGER DEFAULT 0,posts_created INTEGER DEFAULT 0,comments_created INTEGER DEFAULT 0);
-    CREATE TABLE IF NOT EXISTS drafts (id TEXT PRIMARY KEY,user_id TEXT NOT NULL,title TEXT,content TEXT,tags TEXT,category TEXT DEFAULT 'confession',is_anonymous INTEGER DEFAULT 0,created_at TEXT DEFAULT (datetime('now')),updated_at TEXT DEFAULT (datetime('now')));
+    CREATE TABLE IF NOT EXISTS drafts (id TEXT PRIMARY KEY,user_id TEXT NOT NULL,title TEXT,content TEXT,tags TEXT,category TEXT DEFAULT 'confession', is_pinned INTEGER DEFAULT 0,is_anonymous INTEGER DEFAULT 0,created_at TEXT DEFAULT (datetime('now')),updated_at TEXT DEFAULT (datetime('now')));
     CREATE TABLE IF NOT EXISTS sensitive_words (id TEXT PRIMARY KEY,word TEXT NOT NULL UNIQUE,replacement TEXT DEFAULT '***',created_at TEXT DEFAULT (datetime('now')));
   `);
 
