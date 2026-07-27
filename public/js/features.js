@@ -125,3 +125,55 @@ function searchByTag(tag){
   searchKeyword=tag;
   loadPosts(true);
 }
+
+// === 邮箱绑定 ===
+async function bindEmail() {
+  const email = document.getElementById('editEmail').value.trim();
+  if (!email) return showToast('请输入邮箱', 'error');
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) return showToast('邮箱格式不正确', 'error');
+
+  try {
+    const d = await fetchAPI('/api/auth/bind-email', 'POST', { email });
+    showToast('绑定成功！请查收验证邮件', 'success');
+    const statusEl = document.getElementById('emailStatus');
+    if (statusEl) {
+      statusEl.innerHTML = '📧 验证邮件已发送，请查收';
+      statusEl.style.color = '#e74c6f';
+    }
+  } catch (e) {
+    showToast(e.message, 'error');
+  }
+}
+
+// 更新 showProfileCard 填充邮箱
+const _originalShowProfileCard = typeof showProfileCard === 'function' ? showProfileCard : null;
+function showProfileCard() {
+  if (!currentUser) return;
+  const avatarEl = document.getElementById('profileAvatar');
+  const nameEl = document.getElementById('profileName');
+  const bioEl = document.getElementById('profileBio');
+  const nickEl = document.getElementById('editNick');
+  const bioEditEl = document.getElementById('editBio');
+  const emailEl = document.getElementById('editEmail');
+  const emailStatusEl = document.getElementById('emailStatus');
+
+  if (avatarEl) avatarEl.src = currentUser.avatar || '/img/loge.png';
+  if (nameEl) nameEl.textContent = currentUser.nickname;
+  if (bioEl) bioEl.textContent = currentUser.bio || '';
+  if (nickEl) nickEl.value = currentUser.nickname || '';
+  if (bioEditEl) bioEditEl.value = currentUser.bio || '';
+  if (emailEl) emailEl.value = currentUser.email || '';
+
+  if (emailStatusEl && currentUser.email) {
+    if (currentUser.emailVerified) {
+      emailStatusEl.innerHTML = '✅ 已验证';
+      emailStatusEl.style.color = '#27ae60';
+    } else {
+      emailStatusEl.innerHTML = '⚠️ 未验证 <a href="#" onclick="bindEmail();return false" style="color:#e74c6f">重新发送</a>';
+      emailStatusEl.style.color = '#ff9500';
+    }
+  }
+
+  showModal('profileModal');
+}
