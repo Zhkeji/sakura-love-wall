@@ -127,7 +127,6 @@ textarea.fi{min-height:90px;resize:vertical;font-family:inherit}
     <p class="sub">创建你的樱花表白墙账号</p>
     <div class="field"><input type="text" id="regUser" placeholder="用户名 (3-20字符)"></div>
     <div class="field"><input type="text" id="regNick" placeholder="昵称"></div>
-    <div class="field"><input type="email" id="regEmail" placeholder="邮箱 (选填)"></div>
     <div class="field"><input type="password" id="regPass" placeholder="密码 (至少6位)"></div>
     <div class="field"><input type="password" id="regConfirm" placeholder="确认密码"></div>
     <button class="btn" onclick="doRegister()">注 册</button>
@@ -347,14 +346,13 @@ function doLogin() {
 function doRegister() {
   var u = document.getElementById('regUser').value.trim();
   var n = document.getElementById('regNick').value.trim();
-  var e = document.getElementById('regEmail').value.trim();
   var p = document.getElementById('regPass').value;
   var c = document.getElementById('regConfirm').value;
   if (!u || !n || !p) { alert('请填写完整'); return; }
   if (p.length < 6) { alert('密码至少6位'); return; }
   if (p !== c) { alert('两次密码不一致'); return; }
   var body = { username: u, password: p, nickname: n };
-  if (e) body.email = e;
+  
   var xhr = new XMLHttpRequest();
   xhr.open('POST', '/api/auth/register', true);
   xhr.setRequestHeader('Content-Type', 'application/json');
