@@ -741,8 +741,11 @@
       loadSidebar();
       loadSplash();
       loadPopupAnn();
+      loadHotTags();
       siteTime();
       setInterval(checkUnread,30000);
+      setInterval(checkNotifications,30000);
+      checkNotifications();
     }
 
     function updateHeader(){
